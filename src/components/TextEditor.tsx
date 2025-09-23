@@ -1,0 +1,15 @@
+interface TextEditorProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export default function TextEditor({ value, onChange }: TextEditorProps) {
+  return (
+    <textarea
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder="What's on your mind?"
+      className="w-full h-full text-fg font-medium bg-bg-soft placeholder:text-fg-muted text-lg resize-none p-2 focus:outline-none"
+    />
+  );
+}
