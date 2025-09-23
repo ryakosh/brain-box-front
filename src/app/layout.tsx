@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 import BottomBar from "@/components/BottomBar";
+import { ToastProvider } from "@/components/Toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,10 +26,12 @@ export default function RootLayout({
         className={`${inter.className} w-screen h-screen flex flex-col justify-between bg-bg-soft`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main className="flex-grow">{children}</main>
-          <div className="m-1">
-            <BottomBar />
-          </div>
+          <ToastProvider>
+            <main className="flex-grow">{children}</main>
+            <div className="m-1">
+              <BottomBar />
+            </div>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

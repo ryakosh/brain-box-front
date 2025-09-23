@@ -1,10 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import { Send } from "lucide-react"
-
+import { useState } from 'react';
 import TextEditor from '@/components/TextEditor';
-import { getTopic } from '@/lib/api/services/topics';
 
 
 const MOCK_TOPICS = [
@@ -16,9 +14,9 @@ const MOCK_TOPICS = [
 
 export default function HomePage() {
   const [entryText, setEntryText] = useState('');
-  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<number | null>(null); 
   
-  const handleSubmit = () => {
+  const handleSubmit = () => { 
     if (!entryText.trim() || !selectedTopic) {
         alert("Please write a description and select a topic.");
         return;
