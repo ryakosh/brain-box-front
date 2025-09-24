@@ -8,8 +8,8 @@ export default function TextEditor({ value, onChange }: TextEditorProps) {
     <textarea
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      placeholder="What's on your mind?"
-      className="w-full h-full text-fg font-medium bg-bg-soft placeholder:text-fg-muted text-lg resize-none p-2 focus:outline-none"
+      placeholder="..."
+      className="w-full h-full text-fg font-medium bg-bg-hard shadow-md rounded-md placeholder:text-fg-muted text-lg resize-none p-2 focus:outline-none"
     />
   );
 }

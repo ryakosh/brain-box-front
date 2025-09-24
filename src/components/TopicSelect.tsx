@@ -92,7 +92,7 @@ export default function TopicSelect({ onTopicChange }: TopicSelectProps) {
       </button>
 
       {isOpen && (
-        <div className="absolute bottom-full left-0 w-full ml-1 mb-2 p-2 bg-accent-blue shadow-md rounded-lg origin-bottom">
+        <div className="absolute bottom-full left-0 w-full ml-1 mb-2 p-2 bg-accent-blue shadow-md rounded-md origin-bottom">
           <div className="relative">
             <Search
               size={18}
