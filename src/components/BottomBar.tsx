@@ -40,7 +40,7 @@ export default function BottomBar() {
         <button
           type="button"
           onClick={handleMenuToggle}
-          className="w-full h-full flex rounded-md shadow-md items-center justify-center text-lg font-semibold bg-bg-hard hover:bg-bg-hard transition-colors"
+          className="w-full h-full flex rounded-md shadow-md items-center justify-center text-lg font-semibold bg-bg-hard hover:bg-bg-hard transition-colors cursor-pointer"
         >
           <Menu size={24} />
           Menu

@@ -49,14 +49,22 @@ export default function NavigationMenu({
       <div className="p-2">
         <header className="flex items-center justify-between pb-1 mb-1">
           {history.length > 1 ? (
-            <button type="button" onClick={handleBack} className="p-2">
+            <button
+              type="button"
+              onClick={handleBack}
+              className="p-2 cursor-pointer"
+            >
               <ArrowLeft size={20} />
             </button>
           ) : (
             <div className="w-9 h-9"></div> // Placeholder for alignment
           )}
           <h2 className="text-md font-bold text-fg">Menu</h2>
-          <button type="button" onClick={onClose} className="p-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="cursor-pointer p-2"
+          >
             <X size={20} />
           </button>
         </header>
@@ -67,7 +75,7 @@ export default function NavigationMenu({
               <button
                 type="button"
                 onClick={() => handleItemClick(item)}
-                className="w-full flex justify-between items-center text-left p-2 text-fg"
+                className="w-full flex justify-between items-center text-left p-2 text-fg cursor-pointer"
               >
                 <span>{item.label}</span>
                 {item.subItems && (

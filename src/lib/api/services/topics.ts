@@ -43,6 +43,27 @@ export const getTopic = async (
   }
 };
 
+export const searchTopics = async (
+  q: string,
+  limit: number = 10,
+): Promise<TopicRead[]> => {
+  try {
+    const res = await api.get<TopicRead[]>(`${base}/search/`, {
+      params: { q, limit },
+    });
+
+    return res.data;
+  } catch (e) {
+    if (e instanceof APIError) throw e;
+
+    throw new APIError({
+      message: "Failed to search topics",
+      status: 0,
+      original: e,
+    });
+  }
+};
+
 export const updateTopic = async (
   topic_id: number,
   payload: TopicUpdate,

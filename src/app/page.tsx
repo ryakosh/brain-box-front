@@ -1,64 +1,73 @@
-'use client';
+"use client";
 
-import { Send } from "lucide-react"
-import { useState } from 'react';
-import TextEditor from '@/components/TextEditor';
-
+import { Send } from "lucide-react";
+import { useState } from "react";
+import TextEditor from "@/components/TextEditor";
+import { useToast } from "@/components/Toast";
+import { createEntry } from "@/lib/api/services/entries";
+import { APIError } from "@/lib/api/errors";
+import TopicSelect from "@/components/TopicSelect";
+import { TopicRead } from "@/lib/api/types";
 
 const MOCK_TOPICS = [
-  { id: 1, name: 'Software Development' },
-  { id: 2, name: 'Cooking' },
-  { id: 3, name: 'Python' },
-  { id: 4, name: 'React' },
+  { id: 1, name: "Software Development" },
+  { id: 2, name: "Cooking" },
+  { id: 3, name: "Python" },
+  { id: 4, name: "React" },
+  { id: 5, name: "Test" },
 ];
 
 export default function HomePage() {
-  const [entryText, setEntryText] = useState('');
-  const [selectedTopic, setSelectedTopic] = useState<number | null>(null); 
-  
-  const handleSubmit = () => { 
-    if (!entryText.trim() || !selectedTopic) {
-        alert("Please write a description and select a topic.");
-        return;
+  const [description, setDescription] = useState("");
+  const [topicID, setTopicID] = useState<number | null>(null);
+  const { showToast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!description.trim() || !topicID) {
+      showToast("error", "Please write a description and select a topic.");
+
+      return;
     }
-    console.log('Submitting entry:', {
-        description: entryText,
-        topicId: selectedTopic,
-    });
-    // Here you would typically make an API call
-    alert("Entry submitted!");
-    setEntryText('');
-    setSelectedTopic(null);
+
+    try {
+      await createEntry({ description: description.trim(), topic_id: topicID });
+      setDescription("");
+      showToast("success");
+    } catch (err: unknown) {
+      if (err instanceof APIError) {
+        showToast("error", err.message);
+      } else {
+        showToast("error", "An unexpected error occurred");
+      }
+    }
+  };
+
+  const handleTopicSelect = (topic: TopicRead) => {
+    if (topic) {
+      setTopicID(topic.id);
+    }
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <form className="flex flex-col h-full" onSubmit={handleSubmit}>
       <div className="flex-grow">
-        <TextEditor value={entryText} onChange={setEntryText} />
+        <TextEditor value={description} onChange={setDescription} />
       </div>
-       
-      <div className="flex h-16">
-        <select 
-          value={selectedTopic ?? ''}
-          onChange={(e) => setSelectedTopic(Number(e.target.value))}
-          className="text-lg font-semibold p-2 bg-accent-blue rounded-md m-1 shadow-md"
-        >
-          <option value="" disabled>Select a Topic...</option>
-          {MOCK_TOPICS.map(topic => (
-            <option key={topic.id} value={topic.id}>{topic.name}</option>
-          ))}
-        </select> 
+      <div className="flex h-14 my-2 gap-2">
+        <div className="w-2/3">
+          <TopicSelect onTopicChange={handleTopicSelect} />
+        </div>
+
         <button
-          type="button"
-          onClick={handleSubmit}
-          className="flex flex-1 m-1 items-center justify-center text-lg font-semibold bg-accent-orange hover:opacity-90 transition-opacity rounded-md shadow-md"
+          type="submit"
+          className="flex flex-1 h-full m-1 items-center justify-center text-lg font-semibold bg-accent-orange hover:opacity-90 transition-opacity rounded-md shadow-md cursor-pointer"
         >
           <Send size={24} />
           Submit
         </button>
-      </div> 
-    </div>
+      </div>
+    </form>
   );
 }
-
-
