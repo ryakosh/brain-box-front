@@ -16,6 +16,14 @@ export default function BottomBar() {
 
   const menuItems: MenuItem[] = [
     {
+      id: "home",
+      label: "Home",
+      action: () => {
+        router.push("/");
+        setIsMenuOpen(false);
+      },
+    },
+    {
       id: "topics",
       label: "Manage Topics",
       action: () => {
@@ -40,7 +48,7 @@ export default function BottomBar() {
         <button
           type="button"
           onClick={handleMenuToggle}
-          className="w-full h-full flex rounded-md shadow-md items-center justify-center text-lg font-semibold bg-bg-hard hover:bg-bg-hard transition-colors cursor-pointer"
+          className="w-full h-full flex rounded-md shadow-md items-center justify-center text-lg font-semibold bg-bg-hard hover:bg-bg-hard transition-colors cursor-pointer text-fg"
         >
           <Menu size={24} />
           Menu

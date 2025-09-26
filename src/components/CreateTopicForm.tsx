@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Plus, Send } from "lucide-react";
+import { Plus, Send, X } from "lucide-react";
 import type { TopicCreate, TopicRead } from "@/lib/api/types";
 import TopicSelect from "@/components/TopicSelect";
-import { useOnClickOutside } from "@/lib/hooks";
 
 interface CreateTopicFormProps {
   onSubmit?: (topicCreate: TopicCreate) => void;
@@ -14,14 +13,6 @@ export default function CreateTopicForm({ onSubmit }: CreateTopicFormProps) {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [topicName, setTopicName] = useState("");
   const [selectedParent, setSelectedParent] = useState<TopicRead | null>(null);
-
-  const formRef = useRef<HTMLDivElement>(null);
-
-  useOnClickOutside(formRef, () => {
-    if (isFormVisible) {
-      setIsFormVisible(false);
-    }
-  });
 
   const resetForm = () => {
     setTopicName("");
@@ -55,10 +46,20 @@ export default function CreateTopicForm({ onSubmit }: CreateTopicFormProps) {
   const ButtonIcon = isFormVisible ? Send : Plus;
 
   return (
-    <div ref={formRef} className="relative w-full h-full">
+    <div className="relative w-full h-full">
       {isFormVisible && (
         <div className="absolute bottom-full left-0 right-0 mb-1 p-4 bg-bg rounded-md shadow-md">
-          <h3 className="font-bold text-lg mb-4 text-fg">New Topic</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-lg text-fg">New Topic</h3>
+            <button
+              type="button"
+              onClick={() => setIsFormVisible(false)}
+              className="cursor-pointer text-fg-muted"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
           <div className="space-y-4">
             <input
               type="text"

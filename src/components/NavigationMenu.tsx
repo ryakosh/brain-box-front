@@ -48,22 +48,23 @@ export default function NavigationMenu({
     <div className="absolute bottom-full left-0 w-full bg-bg rounded-md shadow-md mb-1 origin-bottom-left">
       <div className="p-2">
         <header className="flex items-center justify-between pb-1 mb-1">
-          {history.length > 1 ? (
-            <button
-              type="button"
-              onClick={handleBack}
-              className="p-2 cursor-pointer"
-            >
-              <ArrowLeft size={20} />
-            </button>
-          ) : (
-            <div className="w-9 h-9"></div> // Placeholder for alignment
-          )}
-          <h2 className="text-md font-bold text-fg">Menu</h2>
+          <div className="flex items-center text-lg font-bold ml-1">
+            {history.length > 1 && (
+              <button
+                type="button"
+                onClick={handleBack}
+                className="p-2 cursor-pointer text-fg-muted"
+              >
+                <ArrowLeft size={20} />
+              </button>
+            )}
+            <h2 className="text-md font-bold text-fg">Menu</h2>
+          </div>
+
           <button
             type="button"
             onClick={onClose}
-            className="cursor-pointer p-2"
+            className="cursor-pointer p-2 text-fg-muted"
           >
             <X size={20} />
           </button>
