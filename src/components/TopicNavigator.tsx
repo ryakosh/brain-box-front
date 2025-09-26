@@ -72,7 +72,7 @@ export default function TopicNavigator() {
       return <p className="text-center text-fg-muted p-6">No subtopics.</p>;
     }
     return (
-      <ul className="space-y-1">
+      <ul className="space-y-1 overflow-auto h-full">
         {displayedTopics.map((topic) => {
           const isClickable = (topic.children_count ?? 0) > 0;
 
@@ -105,7 +105,11 @@ export default function TopicNavigator() {
   };
 
   return (
-    <div className={"bg-bg-hard rounded-md shadow-md h-full w-full mx-auto"}>
+    <div
+      className={
+        "flex flex-col bg-bg-hard rounded-md shadow-md h-full w-full mx-auto"
+      }
+    >
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-2">
           {history.length > 0 && (
@@ -127,7 +131,7 @@ export default function TopicNavigator() {
         )}
       </div>
 
-      <div className="p-2 w-full h-full overflow-auto">{renderContent()}</div>
+      <div className="p-2 w-full min-h-0 flex-1">{renderContent()}</div>
     </div>
   );
 }

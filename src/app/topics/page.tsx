@@ -27,7 +27,7 @@ export default function TopicsPage() {
       <h1 className="font-bold text-2xl mx-1 my-3 text-fg">
         Manage Topics
       </h1>
-      <div className="mx-1 mt-1 mb-3 flex-1 flex-grow-2">
+      <div className="mx-1 mt-1 mb-3 flex-1 min-h-0">
         <TopicNavigator /> 
       </div>
       <div className="my-1 mx-1">

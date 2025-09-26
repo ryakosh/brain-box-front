@@ -75,7 +75,7 @@ export default function CreateTopicForm({ onSubmit }: CreateTopicFormProps) {
       <button
         type="button"
         onClick={handleToggleForm}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 h-14 bg-accent-orange text-lg font-semibold rounded-md hover:bg-accent-orange/90 transition-all duration-200 cursor-pointer"
+        className="w-full flex items-center justify-center gap-1 px-4 py-3 h-14 bg-accent-orange text-lg font-semibold rounded-md hover:bg-accent-orange/90 transition-all duration-200 cursor-pointer"
       >
         <ButtonIcon size={20} />
         <span>{buttonText}</span>
