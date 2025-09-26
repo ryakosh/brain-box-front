@@ -8,7 +8,7 @@ import { useToast } from "@/components/Toast";
 import { APIError } from "@/lib/api/errors";
 
 interface TopicSelectProps {
-  onTopicChange: (topic: TopicRead) => void;
+  onTopicChange: (topic: TopicRead | null) => void;
 }
 
 export default function TopicSelect({ onTopicChange }: TopicSelectProps) {

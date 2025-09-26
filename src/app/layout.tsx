@@ -27,7 +27,7 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ToastProvider>
-            <main className="flex-grow">{children}</main>
+            <main className="flex-1 overflow-auto">{children}</main>
             <div className="m-1">
               <BottomBar />
             </div>

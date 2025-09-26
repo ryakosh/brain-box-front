@@ -127,7 +127,7 @@ export default function TopicNavigator() {
         )}
       </div>
 
-      <div className="p-2 min-h-[100px]">{renderContent()}</div>
+      <div className="p-2 w-full h-full overflow-auto">{renderContent()}</div>
     </div>
   );
 }

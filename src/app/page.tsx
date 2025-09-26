@@ -7,15 +7,7 @@ import { useToast } from "@/components/Toast";
 import { createEntry } from "@/lib/api/services/entries";
 import { APIError } from "@/lib/api/errors";
 import TopicSelect from "@/components/TopicSelect";
-import { TopicRead } from "@/lib/api/types";
-
-const MOCK_TOPICS = [
-  { id: 1, name: "Software Development" },
-  { id: 2, name: "Cooking" },
-  { id: 3, name: "Python" },
-  { id: 4, name: "React" },
-  { id: 5, name: "Test" },
-];
+import type { TopicRead } from "@/lib/api/types";
 
 export default function HomePage() {
   const [description, setDescription] = useState("");
@@ -44,7 +36,7 @@ export default function HomePage() {
     }
   };
 
-  const handleTopicSelect = (topic: TopicRead) => {
+  const handleTopicSelect = (topic: TopicRead | null) => {
     if (topic) {
       setTopicID(topic.id);
     }
