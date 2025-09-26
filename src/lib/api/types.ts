@@ -9,6 +9,11 @@ export interface TopicRead {
   parent_id: number | null;
 }
 
+export interface TopicReadWithCounts extends TopicRead {
+  entries_count: number;
+  children_count: number;
+}
+
 export interface TopicReadWithDetails extends TopicRead {
   children?: TopicRead[];
 }

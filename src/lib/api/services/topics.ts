@@ -4,6 +4,7 @@ import type {
   TopicCreate,
   TopicRead,
   TopicReadWithDetails,
+  TopicReadWithCounts,
   TopicUpdate,
 } from "../types";
 
@@ -27,9 +28,9 @@ export const createTopic = async (payload: TopicCreate): Promise<TopicRead> => {
 
 export const getTopic = async (
   topic_id: number,
-): Promise<TopicReadWithDetails> => {
+): Promise<TopicReadWithCounts> => {
   try {
-    const res = await api.get<TopicReadWithDetails>(`${base}/${topic_id}`);
+    const res = await api.get<TopicReadWithCounts>(`${base}/${topic_id}`);
 
     return res.data;
   } catch (e) {
@@ -37,6 +38,28 @@ export const getTopic = async (
 
     throw new APIError({
       message: "Failed to fetch topic",
+      status: 0,
+      original: e,
+    });
+  }
+};
+
+export const getTopics = async (
+  parent_id: number | null = null,
+  skip: number = 0,
+  limit: number = 100,
+): Promise<TopicReadWithCounts[]> => {
+  try {
+    const res = await api.get<TopicReadWithCounts[]>(`${base}/`, {
+      params: { parent_id, skip, limit },
+    });
+
+    return res.data;
+  } catch (e) {
+    if (e instanceof APIError) throw e;
+
+    throw new APIError({
+      message: "Failed to fetch topics",
       status: 0,
       original: e,
     });
