@@ -36,6 +36,28 @@ export const getEntry = async (entry_id: number): Promise<EntryRead> => {
   }
 };
 
+export const searchEntries = async (
+  q: string,
+  limit: number = 10,
+  skip: number = 0,
+): Promise<EntryRead[]> => {
+  try {
+    const res = await api.get<EntryRead[]>(`${base}/search/`, {
+      params: { q, limit, skip },
+    });
+
+    return res.data;
+  } catch (e) {
+    if (e instanceof APIError) throw e;
+
+    throw new APIError({
+      message: "Failed to search entries",
+      status: 0,
+      original: e,
+    });
+  }
+};
+
 export const updateEntry = async (
   entry_id: number,
   payload: EntryUpdate,

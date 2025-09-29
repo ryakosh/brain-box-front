@@ -104,7 +104,7 @@ export default function TopicSelect({ onTopicChange }: TopicSelectProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for a topic..."
-              className="w-full bg-bg  rounded-md p-2 pl-10 focus:outline-none"
+              className="w-full bg-bg text-lg rounded-md p-2 pl-10 focus:outline-none"
             />
             {isLoading && (
               <Loader2
