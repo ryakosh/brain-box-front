@@ -1,19 +1,33 @@
 "use client";
 
 import { AlertTriangle, Check, Info, X } from "lucide-react";
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { AnimatePresence, motion } from "framer-motion";
+
+const DEFAULT_DURATION = 5000;
 
 type ToastMode = "success" | "error" | "info" | "warning";
 
-interface Toast {
-  id: number;
+interface ToastOpts {
+  id: string;
   mode: ToastMode;
   message?: string;
+  duration?: number; // milliseconds
+}
+
+interface Toast extends ToastOpts {
+  timerStart: number;
+  duration: number;
 }
 
 interface ToastContextType {
-  showToast: (mode: ToastMode, message?: string) => void;
+  showToast: (toast: ToastOpts) => void;
 }
 
 const colors: Record<ToastMode, string> = {
@@ -33,16 +47,41 @@ const icons: Record<ToastMode, React.JSX.Element> = {
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
-  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [toasts, setToasts] = useState<Map<string, Toast>>(new Map());
 
-  const showToast = useCallback((mode: ToastMode, message?: string) => {
-    const id = Date.now();
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
 
-    setToasts((prev) => [...prev, { id, mode, message }]);
+      setToasts((prev) => {
+        const newMap = new Map(prev);
 
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 5000);
+        for (const [id, toast] of prev) {
+          if (now - toast.timerStart >= toast.duration) {
+            newMap.delete(id);
+          }
+        }
+
+        return newMap;
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const showToast = useCallback((toast: ToastOpts) => {
+    setToasts((prev) => {
+      const newMap = new Map(prev);
+      const fullToast: Toast = {
+        ...toast,
+        duration: toast.duration ?? DEFAULT_DURATION,
+        timerStart: Date.now(),
+      };
+
+      newMap.set(toast.id, fullToast);
+
+      return newMap;
+    });
   }, []);
 
   return (
@@ -51,7 +90,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
       <div className="flex flex-col fixed right-0 top-1/2 translate-y-20 z-50">
         <AnimatePresence>
-          {toasts.map((toast) => (
+          {[...toasts.values()].map((toast) => (
             <ToastItem key={toast.id} {...toast} />
           ))}
         </AnimatePresence>
@@ -68,7 +107,7 @@ export function useToast() {
   return ctx;
 }
 
-function ToastItem({ id, mode, message }: Toast) {
+function ToastItem({ mode, message }: Toast) {
   return (
     <motion.div
       initial={{ x: "100%", opacity: 0 }}

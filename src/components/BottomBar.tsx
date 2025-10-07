@@ -24,10 +24,18 @@ export default function BottomBar() {
       },
     },
     {
-      id: "topics",
+      id: "manage-topics",
       label: "Manage Topics",
       action: () => {
         router.push("/topics");
+        setIsMenuOpen(false);
+      },
+    },
+    {
+      id: "search-entries",
+      label: "Search Entries",
+      action: () => {
+        router.push("/entries");
         setIsMenuOpen(false);
       },
     },

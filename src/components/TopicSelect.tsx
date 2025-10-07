@@ -39,9 +39,13 @@ export default function TopicSelect({ onTopicChange }: TopicSelectProps) {
         setSearchResults(results);
       } catch (err: unknown) {
         if (err instanceof APIError) {
-          showToast("error", err.message);
+          showToast({ id: "api-error", mode: "error", message: err.message });
         } else {
-          showToast("error", "An unexpected error occurred");
+          showToast({
+            id: "unexpected-error",
+            mode: "error",
+            message: "An unexpected error occurred",
+          });
         }
       } finally {
         setIsLoading(false);
@@ -51,7 +55,7 @@ export default function TopicSelect({ onTopicChange }: TopicSelectProps) {
     return () => {
       clearTimeout(handler);
     };
-  }, [searchQuery]);
+  }, [searchQuery, showToast]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

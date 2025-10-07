@@ -18,7 +18,11 @@ export default function HomePage() {
     e.preventDefault();
 
     if (!description.trim() || !topicID) {
-      showToast("error", "Please write a description and select a topic.");
+      showToast({
+        id: "validation-error",
+        mode: "error",
+        message: "Please write a description and select a topic.",
+      });
 
       return;
     }
@@ -26,12 +30,16 @@ export default function HomePage() {
     try {
       await createEntry({ description: description.trim(), topic_id: topicID });
       setDescription("");
-      showToast("success");
+      showToast({ id: "create-entry", mode: "success" });
     } catch (err: unknown) {
       if (err instanceof APIError) {
-        showToast("error", err.message);
+        showToast({ id: "api-error", mode: "error", message: err.message });
       } else {
-        showToast("error", "An unexpected error occurred");
+        showToast({
+          id: "unexpected-error",
+          mode: "error",
+          message: "An unexpected error occurred",
+        });
       }
     }
   };

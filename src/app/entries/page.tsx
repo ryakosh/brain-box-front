@@ -35,9 +35,13 @@ export default function SearchPage() {
       setResults(searchResults);
     } catch (err) {
       if (err instanceof APIError) {
-        showToast("error", err.message);
+        showToast({ id: "api-error", mode: "error", message: err.message });
       } else {
-        showToast("error", "An unexpected error occurred");
+        showToast({
+          id: "unexpected-error",
+          mode: "error",
+          message: "An unexpected error occurred",
+        });
       }
       setResults([]);
     } finally {

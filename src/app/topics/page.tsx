@@ -1,7 +1,7 @@
 "use client";
 
-import TopicNavigator from '@/components/TopicNavigator';
-import CreateTopicForm from '@/components/CreateTopicForm';
+import TopicNavigator from "@/components/TopicNavigator";
+import CreateTopicForm from "@/components/CreateTopicForm";
 import type { TopicCreate } from "@/lib/api/types";
 import { createTopic } from "@/lib/api/services/topics";
 import { APIError } from "@/lib/api/errors";
@@ -13,22 +13,24 @@ export default function TopicsPage() {
   const handleSubmit = async (topicCreate: TopicCreate) => {
     try {
       await createTopic(topicCreate);
-      showToast("success");
+      showToast({ id: "create-topic", mode: "success" });
     } catch (err: unknown) {
       if (err instanceof APIError) {
-        showToast("error", err.message);
+        showToast({ id: "api-error", mode: "error", message: err.message });
       } else {
-        showToast("error", "An unexpected error occurred");
+        showToast({
+          id: "unexpected-error",
+          mode: "error",
+          message: "An unexpected error occurred",
+        });
       }
     }
   };
   return (
     <div className="flex flex-col h-full w-full">
-      <h1 className="font-bold text-2xl mx-1 my-3 text-fg">
-        Manage Topics
-      </h1>
+      <h1 className="font-bold text-2xl mx-1 my-3 text-fg">Manage Topics</h1>
       <div className="mx-1 mt-1 mb-3 flex-1 min-h-0">
-        <TopicNavigator /> 
+        <TopicNavigator />
       </div>
       <div className="my-1 mx-1">
         <CreateTopicForm onSubmit={handleSubmit} />
@@ -36,4 +38,3 @@ export default function TopicsPage() {
     </div>
   );
 }
-

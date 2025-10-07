@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Plus, Send, X } from "lucide-react";
 import type { TopicCreate, TopicRead } from "@/lib/api/types";
 import TopicSelect from "@/components/TopicSelect";
