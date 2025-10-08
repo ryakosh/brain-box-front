@@ -8,6 +8,7 @@ import { APIError } from "@/lib/api/errors";
 import { useToast } from "@/components/Toast";
 import { useCallback, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { compareTopicByName, insertTopic } from "./utils";
 
 interface HistoryEntry {
   id: number | null;
@@ -63,8 +64,16 @@ export default function TopicsPage() {
 
   const handleSubmit = async (topicCreate: TopicCreate) => {
     try {
-      await createTopic(topicCreate);
+      const topic = await createTopic(topicCreate);
       showToast({ id: "create-topic", mode: "success" });
+
+      setTopics((prev) =>
+        insertTopic(
+          prev,
+          { ...topic, children_count: 0, entries_count: 0 },
+          compareTopicByName,
+        ),
+      );
     } catch (err: unknown) {
       if (err instanceof APIError) {
         showToast({ id: "api-error", mode: "error", message: err.message });
