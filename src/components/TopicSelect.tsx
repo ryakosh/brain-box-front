@@ -118,20 +118,20 @@ export default function TopicSelect({ onTopicChange }: TopicSelectProps) {
             )}
           </div>
 
-          <div className="max-h-60 overflow-y-auto">
+          <div className="max-h-60 overflow-y-auto mt-1">
             {searchResults.length > 0 && (
               <ul className="space-y-1">
                 {searchResults.map((topic) => (
-                  <li key={topic.id} className="p-2 mt-1">
+                  <li key={topic.id} className="mt-1 px-0.5">
                     <button
                       type="button"
                       onClick={() => handleSelect(topic)}
-                      className="w-full text-left rounded-md hover:opacity-70 cursor-pointer"
+                      className="w-full text-left bg-bg p-1 rounded-md hover:opacity-70 cursor-pointer"
                     >
-                      <div className="flex-inline items-center text-xs bg-bg w-fit px-1 rounded-sm text-accent-yellow uppercase">
+                      <div className="flex-inline items-center text-xs w-fit px-2 rounded-sm text-accent-yellow uppercase">
                         {topic.parent?.name ?? "ROOT"}
                       </div>
-                      <div>{topic.name}</div>
+                      <div className="overflow-x-auto">{topic.name}</div>
                     </button>
                   </li>
                 ))}
