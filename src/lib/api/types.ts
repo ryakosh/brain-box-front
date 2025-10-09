@@ -3,10 +3,16 @@ export interface TopicCreate {
   parent_id?: number | null;
 }
 
+interface TopicParentInfo {
+  name: string;
+  parent_id: number | null;
+}
+
 export interface TopicRead {
   id: number;
   name: string;
   parent_id: number | null;
+  parent: TopicParentInfo | null;
 }
 
 export interface TopicReadWithCounts extends TopicRead {
