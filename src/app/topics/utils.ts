@@ -5,6 +5,15 @@ export const compareTopicByName = (
   b: TopicReadWithCounts,
 ) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
 
+export const isSiblingTopic = (
+  newTopic: TopicReadWithCounts,
+  topics: TopicReadWithCounts[],
+): boolean => {
+  if (topics.length === 0 && newTopic.parent_id === null) return true;
+
+  return topics.some((t) => t.parent_id === newTopic.parent_id);
+};
+
 export const insertTopic = (
   topics: TopicReadWithCounts[],
   newTopic: TopicReadWithCounts,
@@ -12,7 +21,7 @@ export const insertTopic = (
 ): TopicReadWithCounts[] => {
   const updated = [...topics];
 
-  if (newTopic.parent_id === topics[0].parent_id) {
+  if (isSiblingTopic(newTopic, updated)) {
     const index = updated.findIndex((t) => compareFn(newTopic, t) < 0);
     const insertAt = index === -1 ? updated.length : index;
 
@@ -25,7 +34,10 @@ export const insertTopic = (
     if (parentIndex !== -1) {
       const parent = updated[parentIndex];
 
-      parent.children_count += 1;
+      updated[parentIndex] = {
+        ...parent,
+        children_count: parent.children_count + 1,
+      };
     }
   }
 
