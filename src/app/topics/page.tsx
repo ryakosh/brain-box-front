@@ -63,6 +63,16 @@ export default function TopicsPage() {
   };
 
   const handleSubmit = async (topicCreate: TopicCreate) => {
+    if (!topicCreate.name.trim()) {
+      showToast({
+        id: "create-topic",
+        mode: "error",
+        message: "Please name your topic",
+      });
+
+      return;
+    }
+
     try {
       const topic = await createTopic(topicCreate);
       showToast({ id: "create-topic", mode: "success" });

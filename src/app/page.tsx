@@ -21,7 +21,7 @@ export default function HomePage() {
       showToast({
         id: "validation-error",
         mode: "error",
-        message: "Please write a description and select a topic.",
+        message: "Describe what you learned and choose a topic",
       });
 
       return;

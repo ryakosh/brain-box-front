@@ -28,10 +28,6 @@ export default function CreateTopicForm({ onSubmit }: CreateTopicFormProps) {
   };
 
   const handleSubmit = async () => {
-    if (!topicName.trim()) {
-      return;
-    }
-
     const topicCreate: TopicCreate = {
       name: topicName.trim(),
       parent_id: selectedParent?.id ?? null,
