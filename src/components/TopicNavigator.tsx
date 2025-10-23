@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, TrashIcon } from "lucide-react";
 import type { TopicReadWithCounts } from "@/lib/api/types";
 
 interface TopicNavigatorProps {
@@ -6,6 +6,7 @@ interface TopicNavigatorProps {
   title: string;
   onTopicClick: (topics: TopicReadWithCounts) => void;
   onBackClick: () => void;
+  onDelete: (topic: TopicReadWithCounts) => void;
 }
 
 export default function TopicNavigator({
@@ -13,6 +14,7 @@ export default function TopicNavigator({
   title,
   onTopicClick,
   onBackClick,
+  onDelete,
 }: TopicNavigatorProps) {
   const renderContent = () => {
     if (topics.length === 0) {
@@ -24,15 +26,16 @@ export default function TopicNavigator({
           const isClickable = (topic.children_count ?? 0) > 0;
 
           return (
-            <li key={topic.id}>
+            <li key={topic.id} className="flex items-center">
               <button
                 type="button"
                 onClick={() => onTopicClick(topic)}
                 disabled={!isClickable}
-                className={`w-full flex items-center justify-between text-left p-3 rounded-md transition-colors ${isClickable
+                className={`w-full flex items-center justify-between text-left p-3 rounded-md transition-colors ${
+                  isClickable
                     ? "cursor-pointer hover:bg-bg-soft"
                     : "cursor-default"
-                  }`}
+                }`}
               >
                 <span className="text-fg">{topic.name}</span>
                 {isClickable && (
@@ -43,6 +46,13 @@ export default function TopicNavigator({
                     <ChevronRight size={18} className="text-fg-muted" />
                   </div>
                 )}
+              </button>
+              <button
+                type="button"
+                className="text-accent-red cursor-pointer"
+                onClick={() => onDelete(topic)}
+              >
+                <TrashIcon size={20} />
               </button>
             </li>
           );

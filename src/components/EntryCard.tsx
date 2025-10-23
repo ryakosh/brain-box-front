@@ -1,12 +1,13 @@
 import type { EntryRead } from "@/lib/api/types";
-import { Tag } from "lucide-react";
+import { Tag, TrashIcon } from "lucide-react";
 import DOMPurify from "dompurify";
 
 interface EntryCardProps {
   entry: EntryRead;
+  onDelete: (entry: EntryRead) => void;
 }
 
-export default function EntryCard({ entry }: EntryCardProps) {
+export default function EntryCard({ entry, onDelete }: EntryCardProps) {
   const cleanDescription = DOMPurify.sanitize(entry.description, {
     ALLOWED_TAGS: ["b"],
   });
@@ -17,9 +18,18 @@ export default function EntryCard({ entry }: EntryCardProps) {
         className="text-fg mb-3 [&>b]:text-accent-green"
         dangerouslySetInnerHTML={{ __html: cleanDescription }}
       />
-      <div className="flex items-center gap-2 text-sm text-accent-blue">
-        <Tag size={16} />
-        <span className="font-semibold">{entry.topic.name}</span>
+      <div className="flex justify-between">
+        <div className="flex items-center gap-2 text-sm text-accent-blue">
+          <Tag size={20} />
+          <span className="font-semibold">{entry.topic.name}</span>
+        </div>
+        <button
+          type="button"
+          className="text-accent-red cursor-pointer"
+          onClick={() => onDelete(entry)}
+        >
+          <TrashIcon size={20} />
+        </button>
       </div>
     </div>
   );

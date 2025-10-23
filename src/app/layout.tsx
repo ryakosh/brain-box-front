@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import BottomBar from "@/components/BottomBar";
 import { ToastProvider } from "@/components/Toast";
+import { ConfirmProvider } from "@/components/ConfirmProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,10 +28,12 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ToastProvider>
-            <main className="flex-1 overflow-auto min-h-0">{children}</main>
-            <div className="m-1">
-              <BottomBar />
-            </div>
+            <ConfirmProvider>
+              <main className="flex-1 overflow-auto min-h-0">{children}</main>
+              <div className="m-1">
+                <BottomBar />
+              </div>
+            </ConfirmProvider>
           </ToastProvider>
         </ThemeProvider>
       </body>

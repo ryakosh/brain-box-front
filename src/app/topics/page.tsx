@@ -3,12 +3,13 @@
 import TopicNavigator from "@/components/TopicNavigator";
 import CreateTopicForm from "@/components/CreateTopicForm";
 import type { TopicCreate, TopicReadWithCounts } from "@/lib/api/types";
-import { createTopic, getTopics } from "@/lib/api/services/topics";
+import { createTopic, deleteTopic, getTopics } from "@/lib/api/services/topics";
 import { APIError } from "@/lib/api/errors";
 import { useToast } from "@/components/Toast";
 import { useCallback, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { compareTopicByName, insertTopic } from "./utils";
+import { useConfirm } from "@/components/ConfirmProvider";
 
 interface HistoryEntry {
   id: number | null;
@@ -20,6 +21,7 @@ export default function TopicsPage() {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
+  const confirm = useConfirm();
 
   const fetchTopics = useCallback(
     async (topicId: number | null) => {
@@ -97,6 +99,33 @@ export default function TopicsPage() {
     }
   };
 
+  const handleDelete = async (topic: TopicReadWithCounts) => {
+    const accepted = await confirm({
+      title: "Delete this topic?",
+      description: "This will permanently delete the topic.",
+      confirmLabel: "Delete",
+      rejectLabel: "Cancel",
+    });
+
+    if (accepted) {
+      try {
+        await deleteTopic(topic.id);
+
+        setTopics((prev) => prev.filter((t) => t.id !== topic.id));
+      } catch (err) {
+        if (err instanceof APIError) {
+          showToast({ id: "api-error", mode: "error", message: err.message });
+        } else {
+          showToast({
+            id: "unexpected-error",
+            mode: "error",
+            message: "An unexpected error occurred",
+          });
+        }
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col h-full w-full">
       <h1 className="font-bold text-2xl mx-1 my-3 text-fg">Manage Topics</h1>
@@ -112,6 +141,7 @@ export default function TopicsPage() {
             topics={topics}
             onTopicClick={handleTopicClick}
             onBackClick={handleBackClick}
+            onDelete={handleDelete}
           />
         )}
       </div>

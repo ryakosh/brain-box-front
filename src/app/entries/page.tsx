@@ -6,16 +6,46 @@ import { Search, Loader2, Frown } from "lucide-react";
 
 import EntrySearchBar from "@/components/EntrySearchBar";
 import EntryCard from "@/components/EntryCard";
-import { searchEntries } from "@/lib/api/services/entries";
+import { deleteEntry, searchEntries } from "@/lib/api/services/entries";
 import type { EntryRead } from "@/lib/api/types";
 import { APIError } from "@/lib/api/errors";
 import { useToast } from "@/components/Toast";
+import { useConfirm } from "@/components/ConfirmProvider";
 
 export default function SearchPage() {
   const [results, setResults] = useState<EntryRead[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const { showToast } = useToast();
+
+  const confirm = useConfirm();
+
+  const handleDelete = async (entry: EntryRead) => {
+    const accepted = await confirm({
+      title: "Delete this entry?",
+      description: "This will permanently delete the entry.",
+      confirmLabel: "Delete",
+      rejectLabel: "Cancel",
+    });
+
+    if (accepted) {
+      try {
+        await deleteEntry(entry.id);
+
+        setResults((prev) => prev.filter((e) => e.id !== entry.id));
+      } catch (err) {
+        if (err instanceof APIError) {
+          showToast({ id: "api-error", mode: "error", message: err.message });
+        } else {
+          showToast({
+            id: "unexpected-error",
+            mode: "error",
+            message: "An unexpected error occurred",
+          });
+        }
+      }
+    }
+  };
 
   const performSearch = useDebouncedCallback(async (query: string) => {
     if (query.length < 2) {
@@ -81,7 +111,7 @@ export default function SearchPage() {
     return (
       <div className="w-full space-y-2">
         {results.map((entry) => (
-          <EntryCard key={entry.id} entry={entry} />
+          <EntryCard key={entry.id} entry={entry} onDelete={handleDelete} />
         ))}
       </div>
     );
@@ -94,7 +124,6 @@ export default function SearchPage() {
         <div className="flex-grow p-1 flex justify-center">
           <div className="w-full h-full">{renderContent()}</div>
         </div>
-
         <div className="my-1 mx-1">
           <EntrySearchBar onSearchChange={performSearch} />
         </div>
