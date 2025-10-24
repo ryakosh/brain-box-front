@@ -1,13 +1,14 @@
 import type { EntryRead } from "@/lib/api/types";
 import { Tag, TrashIcon } from "lucide-react";
 import DOMPurify from "dompurify";
+import React from "react";
 
 interface EntryCardProps {
   entry: EntryRead;
   onDelete: (entry: EntryRead) => void;
 }
 
-export default function EntryCard({ entry, onDelete }: EntryCardProps) {
+const EntryCard = React.memo(({ entry, onDelete }: EntryCardProps) => {
   const cleanDescription = DOMPurify.sanitize(entry.description, {
     ALLOWED_TAGS: ["b"],
   });
@@ -33,4 +34,6 @@ export default function EntryCard({ entry, onDelete }: EntryCardProps) {
       </div>
     </div>
   );
-}
+});
+
+export default EntryCard;

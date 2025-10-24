@@ -29,7 +29,7 @@ const Dialog: React.FC<DialogProps> = ({ isOpen, onClose, children }) => {
       <div
         ref={dialogRef}
         className={cn(
-          "relative rounded-md grid w-full max-w-lg gap-4 bg-bg px-2 py-3 shadow-md mx-1",
+          "relative rounded-md grid w-full max-w-lg gap-4 bg-bg-soft px-2 py-3 shadow-md mx-1",
         )}
       >
         {children}
