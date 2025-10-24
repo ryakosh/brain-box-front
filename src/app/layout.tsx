@@ -1,20 +1,14 @@
 import "./globals.css";
 
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 import BottomBar from "@/components/BottomBar";
 import { ToastProvider } from "@/components/Toast";
 import { ConfirmProvider } from "@/components/ConfirmProvider";
+import NavigationMenu from "@/components/NavigationMenu";
 
 const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Brain Box",
-  description: "A simple app to log what you've learned.",
-  // manifest: "/manifest.json",
-};
 
 export default function RootLayout({
   children,
@@ -29,9 +23,17 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ToastProvider>
             <ConfirmProvider>
-              <main className="flex-1 overflow-auto min-h-0">{children}</main>
-              <div className="m-1">
-                <BottomBar />
+              <div className="flex flex-col md:flex-row w-full h-full min-h-0">
+                <div className="hidden md:flex flex-col justify-center md:w-2xs lg:w-sm h-full">
+                  <NavigationMenu />
+                </div>
+
+                <main className="flex-1 overflow-auto min-h-0 md:p-1">
+                  {children}
+                </main>
+                <div className="m-1 md:hidden">
+                  <BottomBar />
+                </div>
               </div>
             </ConfirmProvider>
           </ToastProvider>
