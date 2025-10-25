@@ -103,7 +103,7 @@ export default function TopicsPage() {
     const accepted = await confirm({
       title: "Delete this topic?",
       description:
-        "This will permanently delete the topic, its subtopics and all of its entries.",
+        "This will permanently delete the topic and all of its entries, its subtopics and their entries remain intact.",
       confirmLabel: "Delete",
       rejectLabel: "Cancel",
     });
@@ -112,7 +112,13 @@ export default function TopicsPage() {
       try {
         await deleteTopic(topic.id);
 
-        setTopics((prev) => prev.filter((t) => t.id !== topic.id));
+        if (topic.children_count > 0) {
+          await fetchTopics(topic.parent_id);
+        } else {
+          setTopics((prev) => prev.filter((t) => t.id !== topic.id));
+        }
+
+        showToast({ id: "delete-topic", mode: "success" });
       } catch (err) {
         if (err instanceof APIError) {
           showToast({ id: "api-error", mode: "error", message: err.message });
