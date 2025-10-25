@@ -21,7 +21,7 @@ export class APIError extends Error {
 
   static fromAxios(err: AxiosError) {
     const status = err.response?.status ?? 0;
-    const data = err.response?.data;
+    const data: any = err.response?.data;
     const message =
       (data && (data.detail || data.message)) ||
       err.message ||
