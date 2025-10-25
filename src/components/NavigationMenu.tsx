@@ -53,15 +53,22 @@ export default function NavigationMenu({ onClose }: NavigationMenuProps) {
   const handleItemClick = (item: MenuItem) => {
     if (item.subItems) {
       setHistory([...history, item.subItems]);
+
+      return;
     } else if (typeof item.action === "function") {
       item.action();
+      onClose?.();
+
+      return;
     } else if (typeof item.action === "string") {
       if (item.action.startsWith("theme-")) {
         setTheme(item.action.replace("theme-", ""));
+        onClose?.();
 
         return;
       }
 
+      onClose?.();
       router.push(item.action);
     }
   };
@@ -74,14 +81,14 @@ export default function NavigationMenu({ onClose }: NavigationMenuProps) {
 
   return (
     <div className="absolute md:static bottom-full left-0 w-full md:h-full origin-bottom-left">
-      <div className="p-2 bg-bg rounded-md shadow-md mb-1 md:h-full">
+      <div className="p-2 bg-bg rounded-md shadow-md mb-1 md:h-full transition-all duration-200 ease-out animate-in fade-in-0 zoom-in-95">
         <header className="flex items-center justify-between pb-1 mb-1">
           <div className="flex items-center text-lg font-bold ml-1">
             {history.length > 1 && (
               <button
                 type="button"
                 onClick={handleBack}
-                className="p-2 cursor-pointer text-fg-muted"
+                className="cursor-pointer text-fg-muted mr-2"
               >
                 <ArrowLeft size={20} />
               </button>
@@ -110,7 +117,7 @@ export default function NavigationMenu({ onClose }: NavigationMenuProps) {
               >
                 <span>{item.label}</span>
                 {item.subItems && (
-                  <ChevronRight size={18} className="text-fg-muted" />
+                  <ChevronRight size={20} className="text-fg-muted" />
                 )}
               </button>
             </li>
