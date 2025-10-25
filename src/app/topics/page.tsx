@@ -102,7 +102,8 @@ export default function TopicsPage() {
   const handleDelete = async (topic: TopicReadWithCounts) => {
     const accepted = await confirm({
       title: "Delete this topic?",
-      description: "This will permanently delete the topic.",
+      description:
+        "This will permanently delete the topic, its subtopics and all of its entries.",
       confirmLabel: "Delete",
       rejectLabel: "Cancel",
     });
