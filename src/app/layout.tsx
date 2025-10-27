@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.className} w-screen h-screen flex flex-col justify-between bg-bg-soft`}
+        className={`${inter.className} w-screen h-dvh flex flex-col justify-between bg-bg-soft`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ToastProvider>
@@ -28,7 +28,7 @@ export default function RootLayout({
                   <NavigationMenu />
                 </div>
 
-                <main className="flex-1 overflow-auto min-h-0 md:p-1">
+                <main className="flex-1 overflow-auto w-full min-h-0 md:p-1">
                   {children}
                 </main>
                 <div className="m-1 md:hidden">
