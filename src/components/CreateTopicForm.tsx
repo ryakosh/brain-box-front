@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Plus, Send, X } from "lucide-react";
 import type { TopicCreate, TopicRead } from "@/lib/api/types";

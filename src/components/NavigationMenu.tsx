@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTheme } from "next-themes";
 import { X, ArrowLeft, ChevronRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 
 const items: MenuItem[] = [
   {
@@ -46,7 +46,7 @@ interface NavigationMenuProps {
 export default function NavigationMenu({ onClose }: NavigationMenuProps) {
   const [history, setHistory] = useState<MenuItem[][]>([items]);
   const { setTheme } = useTheme();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const currentMenuItems = history[history.length - 1];
 
@@ -69,7 +69,7 @@ export default function NavigationMenu({ onClose }: NavigationMenuProps) {
       }
 
       onClose?.();
-      router.push(item.action);
+      navigate(item.action);
     }
   };
 

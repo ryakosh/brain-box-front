@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, useRef } from "react";
 import { ChevronDown, Search, Loader2 } from "lucide-react";
 import type { TopicRead } from "@/lib/api/types";

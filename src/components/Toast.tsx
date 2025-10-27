@@ -1,5 +1,3 @@
-"use client";
-
 import { AlertTriangle, Check, Info, X } from "lucide-react";
 import {
   createContext,

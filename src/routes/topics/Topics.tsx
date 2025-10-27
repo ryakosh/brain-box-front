@@ -1,5 +1,3 @@
-"use client";
-
 import TopicNavigator from "@/components/TopicNavigator";
 import CreateTopicForm from "@/components/CreateTopicForm";
 import type { TopicCreate, TopicReadWithCounts } from "@/lib/api/types";

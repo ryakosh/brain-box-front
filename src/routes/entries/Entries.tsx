@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { Loader2 } from "lucide-react";
