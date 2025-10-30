@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { Loader2 } from "lucide-react";
 
@@ -6,90 +6,65 @@ import EntrySearchBar from "@/components/EntrySearchBar";
 import EntryCard from "@/components/EntryCard";
 import { deleteEntry, searchEntries } from "@/lib/api/services/entries";
 import type { EntryRead } from "@/lib/api/types";
-import { APIError } from "@/lib/api/errors";
 import { useToast } from "@/components/Toast";
 import { useConfirm } from "@/components/ConfirmProvider";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function SearchPage() {
-  const [results, setResults] = useState<EntryRead[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const queryClient = useQueryClient();
   const { showToast } = useToast();
-
   const confirm = useConfirm();
 
-  const handleDelete = useCallback(
-    async (entry: EntryRead) => {
-      const accepted = await confirm({
-        title: "Delete this entry?",
-        description: "This will permanently delete the entry.",
-        confirmLabel: "Delete",
-        rejectLabel: "Cancel",
+  const { data: entries, ...entriesQuery } = useQuery({
+    queryKey: ["entries", searchTerm],
+    queryFn: ({ queryKey }) => searchEntries(queryKey[1]),
+    staleTime: 0,
+    gcTime: 0,
+    enabled: searchTerm?.length >= 3,
+  });
+
+  const deleteEntryMutation = useMutation({
+    mutationFn: (entry: EntryRead) => deleteEntry(entry.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["entries", searchTerm],
       });
 
-      if (accepted) {
-        try {
-          await deleteEntry(entry.id);
-
-          setResults((prev) => prev.filter((e) => e.id !== entry.id));
-        } catch (err) {
-          if (err instanceof APIError) {
-            showToast({ id: "api-error", mode: "error", message: err.message });
-          } else {
-            showToast({
-              id: "unexpected-error",
-              mode: "error",
-              message: "An unexpected error occurred",
-            });
-          }
-        }
-      }
+      showToast({ id: "delete-topic", mode: "success" });
     },
-    [showToast, confirm],
-  );
+    onError: (error) => {
+      showToast({ id: "api-error", mode: "error", message: error.message });
+    },
+  });
 
-  const performSearch = useDebouncedCallback(async (query: string) => {
-    if (query.length < 2) {
-      setResults([]);
-      setIsLoading(false);
-      setHasSearched(false);
+  const handleDelete = async (entry: EntryRead) => {
+    const accepted = await confirm({
+      title: "Delete this entry?",
+      description: "This will permanently delete the entry.",
+      confirmLabel: "Delete",
+      rejectLabel: "Cancel",
+    });
 
-      return;
+    if (accepted) {
+      deleteEntryMutation.mutate(entry);
     }
+  };
 
-    setIsLoading(true);
-    setHasSearched(true);
+  if (entriesQuery.isError) {
+    showToast({
+      id: "api-error",
+      mode: "error",
+      message: entriesQuery.error.message,
+    });
+  }
 
-    try {
-      const searchResults = await searchEntries(query);
-
-      setResults(searchResults);
-    } catch (err) {
-      if (err instanceof APIError) {
-        showToast({ id: "api-error", mode: "error", message: err.message });
-      } else {
-        showToast({
-          id: "unexpected-error",
-          mode: "error",
-          message: "An unexpected error occurred",
-        });
-      }
-      setResults([]);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSearchChange = useDebouncedCallback(async (st: string) => {
+    setSearchTerm(st);
   }, 300);
 
   const renderContent = () => {
-    if (isLoading) {
-      return (
-        <div className="flex flex-col items-center justify-center text-fg-muted text-center p-6">
-          <Loader2 size={48} className="animate-spin mb-4" />
-        </div>
-      );
-    }
-
-    if (!hasSearched) {
+    if (searchTerm.length <= 2) {
       return (
         <p className="text-center text-fg-muted p-6">
           Use the search bar below to find your entries.
@@ -97,7 +72,15 @@ export default function SearchPage() {
       );
     }
 
-    if (results.length === 0) {
+    if (entriesQuery.isLoading) {
+      return (
+        <div className="flex flex-col items-center justify-center text-fg-muted text-center p-6">
+          <Loader2 size={48} className="animate-spin mb-4" />
+        </div>
+      );
+    }
+
+    if (entries?.length === 0) {
       return (
         <p className="text-center text-fg-muted p-6">
           No results found, try a different search term.
@@ -107,7 +90,7 @@ export default function SearchPage() {
 
     return (
       <div className="w-full space-y-2 overflow-auto h-full">
-        {results.map((entry) => (
+        {entries?.map((entry) => (
           <EntryCard key={entry.id} entry={entry} onDelete={handleDelete} />
         ))}
       </div>
@@ -126,7 +109,7 @@ export default function SearchPage() {
         </div>
       </div>
       <div className="my-1 mx-1">
-        <EntrySearchBar onSearchChange={performSearch} />
+        <EntrySearchBar onSearchChange={handleSearchChange} />
       </div>
     </div>
   );
