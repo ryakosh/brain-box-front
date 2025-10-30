@@ -3,14 +3,25 @@ import { useState } from "react";
 import TextEditor from "@/components/TextEditor";
 import { useToast } from "@/components/Toast";
 import { createEntry } from "@/lib/api/services/entries";
-import { APIError } from "@/lib/api/errors";
 import TopicSelect from "@/components/TopicSelect";
-import type { TopicRead } from "@/lib/api/types";
+import type { EntryCreate, TopicRead } from "@/lib/api/types";
+import { useMutation } from "@tanstack/react-query";
 
 export default function HomePage() {
   const [description, setDescription] = useState("");
   const [topicID, setTopicID] = useState<number | null>(null);
   const { showToast } = useToast();
+
+  const createEntryMutation = useMutation({
+    mutationFn: (entry: EntryCreate) => createEntry(entry),
+    onSuccess: () => {
+      showToast({ id: "create-entry", mode: "success" });
+      setDescription("");
+    },
+    onError: (error) => {
+      showToast({ id: "api-error", mode: "error", message: error.message });
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,21 +36,7 @@ export default function HomePage() {
       return;
     }
 
-    try {
-      await createEntry({ description: description.trim(), topic_id: topicID });
-      setDescription("");
-      showToast({ id: "create-entry", mode: "success" });
-    } catch (err: unknown) {
-      if (err instanceof APIError) {
-        showToast({ id: "api-error", mode: "error", message: err.message });
-      } else {
-        showToast({
-          id: "unexpected-error",
-          mode: "error",
-          message: "An unexpected error occurred",
-        });
-      }
-    }
+    createEntryMutation.mutate({ description, topic_id: topicID });
   };
 
   const handleTopicSelect = (topic: TopicRead | null) => {

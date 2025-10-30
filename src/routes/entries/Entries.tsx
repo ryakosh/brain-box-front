@@ -31,7 +31,7 @@ export default function SearchPage() {
         queryKey: ["entries", searchTerm],
       });
 
-      showToast({ id: "delete-topic", mode: "success" });
+      showToast({ id: "delete-entry", mode: "success" });
     },
     onError: (error) => {
       showToast({ id: "api-error", mode: "error", message: error.message });
