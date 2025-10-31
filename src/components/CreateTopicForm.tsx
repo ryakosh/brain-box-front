@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Plus, Send, X } from "lucide-react";
 import type { TopicCreate, TopicRead } from "@/lib/api/types";
-import TopicSelect from "@/components/TopicSelect";
 
 interface CreateTopicFormProps {
   onSubmit?: (topicCreate: TopicCreate) => void;
@@ -10,11 +9,9 @@ interface CreateTopicFormProps {
 export default function CreateTopicForm({ onSubmit }: CreateTopicFormProps) {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [topicName, setTopicName] = useState("");
-  const [selectedParent, setSelectedParent] = useState<TopicRead | null>(null);
 
   const resetForm = () => {
     setTopicName("");
-    setSelectedParent(null);
   };
 
   const handleToggleForm = () => {
@@ -28,7 +25,6 @@ export default function CreateTopicForm({ onSubmit }: CreateTopicFormProps) {
   const handleSubmit = async () => {
     const topicCreate: TopicCreate = {
       name: topicName.trim(),
-      parent_id: selectedParent?.id ?? null,
     };
 
     setIsFormVisible(false);
@@ -62,7 +58,6 @@ export default function CreateTopicForm({ onSubmit }: CreateTopicFormProps) {
               placeholder="Enter topic name..."
               className="w-full bg-bg-hard rounded-md px-3 py-2 text-fg outline-none"
             />
-            <TopicSelect onTopicChange={setSelectedParent} />
           </div>
         </div>
       )}

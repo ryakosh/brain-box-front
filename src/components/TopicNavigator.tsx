@@ -2,16 +2,18 @@ import { ChevronLeft, ChevronRight, TrashIcon } from "lucide-react";
 import type { TopicReadWithCounts } from "@/lib/api/types";
 
 interface TopicNavigatorProps {
+  parentTopic: TopicReadWithCounts | null;
   topics: TopicReadWithCounts[];
-  title: string;
+  showBack: boolean;
   onTopicClick: (topics: TopicReadWithCounts) => void;
   onBackClick: () => void;
   onDelete: (topic: TopicReadWithCounts) => void;
 }
 
 export default function TopicNavigator({
+  parentTopic,
   topics,
-  title,
+  showBack,
   onTopicClick,
   onBackClick,
   onDelete,
@@ -23,29 +25,22 @@ export default function TopicNavigator({
     return (
       <ul className="space-y-1 overflow-auto h-full">
         {topics.map((topic) => {
-          const isClickable = (topic.children_count ?? 0) > 0;
-
           return (
             <li key={topic.id} className="flex items-center">
               <button
                 type="button"
                 onClick={() => onTopicClick(topic)}
-                disabled={!isClickable}
-                className={`w-full flex items-center justify-between text-left p-3 rounded-md transition-colors ${
-                  isClickable
-                    ? "cursor-pointer hover:bg-bg-soft"
-                    : "cursor-default"
-                }`}
+                className={
+                  "w-full flex items-center justify-between text-left p-3 rounded-md transition-colors cursor-pointer hover:bg-bg-soft"
+                }
               >
                 <span className="text-fg">{topic.name}</span>
-                {isClickable && (
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-semibold text-fg-muted">
-                      {topic.children_count}
-                    </span>
-                    <ChevronRight size={18} className="text-fg-muted" />
-                  </div>
-                )}
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-semibold text-fg-muted">
+                    {topic.children_count}
+                  </span>
+                  <ChevronRight size={18} className="text-fg-muted" />
+                </div>
               </button>
               <button
                 type="button"
@@ -69,23 +64,23 @@ export default function TopicNavigator({
     >
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-2">
-          {topics.length > 0 && topics[0].parent_id && (
+          {showBack && (
             <button
               type="button"
-              onClick={() => onBackClick()}
+              onClick={onBackClick}
               className="p-1 cursor-pointer"
               aria-label="Go back"
             >
               <ChevronLeft className="text-fg-muted" size={20} />
             </button>
           )}
-          <h2 className="text-lg font-bold text-fg">{title}</h2>
+          <h2 className="text-lg font-bold text-fg">
+            {parentTopic?.name ?? "Root Topics"}
+          </h2>
         </div>
-        {topics.length && (
-          <span className="text-sm font-medium bg-fg-soft text-fg-muted px-2 py-1 rounded-md">
-            {topics.length}
-          </span>
-        )}
+        <span className="text-sm font-medium bg-fg-soft text-fg-muted px-2 py-1 rounded-md">
+          {topics.length}
+        </span>
       </div>
 
       <div className="p-2 w-full min-h-0 flex-1">{renderContent()}</div>

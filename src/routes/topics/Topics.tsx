@@ -7,8 +7,12 @@ import { Loader2 } from "lucide-react";
 import { useConfirm } from "@/components/ConfirmProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 
 export default function TopicsPage() {
+  const [parentTopic, setParentTopic] = useState<TopicReadWithCounts | null>(
+    null,
+  );
   const { id } = useParams();
   const navigate = useNavigate();
   const { showToast } = useToast();
@@ -50,14 +54,12 @@ export default function TopicsPage() {
   });
 
   const handleTopicClick = (topic: TopicReadWithCounts) => {
-    if (topic.children_count && topic.children_count > 0) {
-      navigate(`/topics/${topic.id}`);
-    }
+    navigate(`/topics/${topic.id}`);
+    setParentTopic(topic);
   };
 
   const handleBackClick = () => {
-    const topicParent = topics?.[0].parent || null;
-    navigate(`/topics/${topicParent?.parent_id ?? ""}`);
+    navigate(-1);
   };
 
   const handleSubmit = async (topicCreate: TopicCreate) => {
@@ -71,6 +73,7 @@ export default function TopicsPage() {
       return;
     }
 
+    topicCreate.parent_id = parentId;
     createTopicMutation.mutate(topicCreate);
   };
 
@@ -107,12 +110,9 @@ export default function TopicsPage() {
         )}
         {!topicsQuery.isLoading && (
           <TopicNavigator
-            title={
-              topics && topics.length > 0 && topics[0].parent
-                ? topics[0].parent.name
-                : "Root Topics"
-            }
+            parentTopic={parentTopic}
             topics={topics ?? []}
+            showBack={parentId !== null}
             onTopicClick={handleTopicClick}
             onBackClick={handleBackClick}
             onDelete={handleDelete}
