@@ -1,6 +1,6 @@
-import api from "../base";
-import { APIError } from "../errors";
-import type { EntryCreate, EntryRead, EntryUpdate } from "../types";
+import api from "@/lib/api/base";
+import { APIError } from "@/lib/api/errors";
+import type { EntryCreate, EntryRead, EntryUpdate } from "@/lib/api/types";
 
 const base = "/api/entries";
 

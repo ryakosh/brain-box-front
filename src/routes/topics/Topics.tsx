@@ -91,14 +91,6 @@ export default function TopicsPage() {
     }
   };
 
-  if (topicsQuery.isError) {
-    showToast({
-      id: "api-error",
-      mode: "error",
-      message: topicsQuery.error.message,
-    });
-  }
-
   return (
     <div className="flex flex-col h-full w-full">
       <h1 className="font-bold text-2xl mx-1 my-3 text-fg">Manage Topics</h1>

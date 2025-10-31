@@ -9,12 +9,16 @@ import type { EntryRead } from "@/lib/api/types";
 import { useToast } from "@/components/Toast";
 import { useConfirm } from "@/components/ConfirmProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import PageError from "@/components/PageError";
+import PageLoading from "@/components/PageLoading";
 
 export default function SearchPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const confirm = useConfirm();
+  const navigate = useNavigate();
 
   const { data: entries, ...entriesQuery } = useQuery({
     queryKey: ["entries", searchTerm],
@@ -38,7 +42,11 @@ export default function SearchPage() {
     },
   });
 
-  const handleDelete = async (entry: EntryRead) => {
+  const handleEntryClick = (entry: EntryRead) => {
+    navigate(`${entry.id}`);
+  };
+
+  const handleEntryDelete = async (entry: EntryRead) => {
     const accepted = await confirm({
       title: "Delete this entry?",
       description: "This will permanently delete the entry.",
@@ -50,14 +58,6 @@ export default function SearchPage() {
       deleteEntryMutation.mutate(entry);
     }
   };
-
-  if (entriesQuery.isError) {
-    showToast({
-      id: "api-error",
-      mode: "error",
-      message: entriesQuery.error.message,
-    });
-  }
 
   const handleSearchChange = useDebouncedCallback(async (st: string) => {
     setSearchTerm(st);
@@ -72,14 +72,6 @@ export default function SearchPage() {
       );
     }
 
-    if (entriesQuery.isLoading) {
-      return (
-        <div className="flex flex-col items-center justify-center text-fg-muted text-center p-6">
-          <Loader2 size={48} className="animate-spin mb-4" />
-        </div>
-      );
-    }
-
     if (entries?.length === 0) {
       return (
         <p className="text-center text-fg-muted p-6">
@@ -91,7 +83,12 @@ export default function SearchPage() {
     return (
       <div className="w-full space-y-2 overflow-auto h-full">
         {entries?.map((entry) => (
-          <EntryCard key={entry.id} entry={entry} onDelete={handleDelete} />
+          <EntryCard
+            key={entry.id}
+            entry={entry}
+            onClick={handleEntryClick}
+            onDelete={handleEntryDelete}
+          />
         ))}
       </div>
     );
@@ -102,10 +99,18 @@ export default function SearchPage() {
       <h1 className="font-bold text-2xl mx-1 my-3 text-fg">Search Entries</h1>
       <div className="mx-1 mt-1 mb-3 flex-1 min-h-0">
         <div className="flex flex-col bg-bg-hard rounded-md shadow-md h-full overflow-auto w-full mx-auto">
-          <div className="flex items-center justify-between p-4">
-            <h2 className="text-lg font-bold text-fg">Results</h2>
-          </div>
-          <div className="p-2 w-full min-h-0 flex-1">{renderContent()}</div>
+          {entriesQuery.isError && (
+            <PageError>{entriesQuery.error?.message}</PageError>
+          )}
+          {entriesQuery.isLoading && <PageLoading />}
+          {
+            <>
+              <div className="flex items-center justify-between p-4">
+                <h2 className="text-lg font-bold text-fg">Results</h2>
+              </div>
+              <div className="p-2 w-full min-h-0 flex-1">{renderContent()}</div>
+            </>
+          }
         </div>
       </div>
       <div className="my-1 mx-1">

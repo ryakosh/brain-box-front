@@ -5,16 +5,20 @@ import React from "react";
 
 interface EntryCardProps {
   entry: EntryRead;
+  onClick: (entry: EntryRead) => void;
   onDelete: (entry: EntryRead) => void;
 }
 
-const EntryCard = React.memo(({ entry, onDelete }: EntryCardProps) => {
+const EntryCard = React.memo(({ entry, onClick, onDelete }: EntryCardProps) => {
   const cleanDescription = DOMPurify.sanitize(entry.description, {
     ALLOWED_TAGS: ["b"],
   });
 
   return (
-    <div className="w-full bg-bg rounded-md p-4 shadow-md">
+    <div
+      onClick={() => onClick(entry)}
+      className="w-full bg-bg rounded-md p-4 shadow-md"
+    >
       <div
         className="text-fg mb-3 [&>b]:text-accent-green"
         dangerouslySetInnerHTML={{ __html: cleanDescription }}
