@@ -1,7 +1,7 @@
 import type { EntryRead } from "@/lib/api/types";
 import { Tag, TrashIcon } from "lucide-react";
 import DOMPurify from "dompurify";
-import React from "react";
+import React, { FormEvent } from "react";
 
 interface EntryCardProps {
   entry: EntryRead;
@@ -13,6 +13,11 @@ const EntryCard = React.memo(({ entry, onClick, onDelete }: EntryCardProps) => {
   const cleanDescription = DOMPurify.sanitize(entry.description, {
     ALLOWED_TAGS: ["b"],
   });
+
+  const handleDelete = (e: FormEvent) => {
+    e.stopPropagation();
+    onDelete(entry);
+  };
 
   return (
     <div
@@ -31,7 +36,7 @@ const EntryCard = React.memo(({ entry, onClick, onDelete }: EntryCardProps) => {
         <button
           type="button"
           className="text-accent-red cursor-pointer"
-          onClick={() => onDelete(entry)}
+          onClick={handleDelete}
         >
           <TrashIcon size={20} />
         </button>
