@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import { Loader2 } from "lucide-react";
-
 import EntrySearchBar from "@/components/EntrySearchBar";
 import EntryCard from "@/components/EntryCard";
 import { deleteEntry, searchEntries } from "@/lib/api/services/entries";
@@ -103,14 +101,14 @@ export default function SearchPage() {
             <PageError>{entriesQuery.error?.message}</PageError>
           )}
           {entriesQuery.isLoading && <PageLoading />}
-          {
+          {!entriesQuery.isError && !entriesQuery.isLoading && (
             <>
               <div className="flex items-center justify-between p-4">
                 <h2 className="text-lg font-bold text-fg">Results</h2>
               </div>
               <div className="p-2 w-full min-h-0 flex-1">{renderContent()}</div>
             </>
-          }
+          )}
         </div>
       </div>
       <div className="my-1 mx-1">
