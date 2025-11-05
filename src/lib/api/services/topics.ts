@@ -3,7 +3,6 @@ import { APIError } from "../errors";
 import type {
   TopicCreate,
   TopicRead,
-  TopicReadWithDetails,
   TopicReadWithCounts,
   TopicUpdate,
 } from "../types";
