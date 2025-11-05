@@ -32,6 +32,6 @@ const createAxios = (baseURL: string): AxiosInstance => {
 };
 
 export const api = createAxios(
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000",
+  import.meta.env.VITE_API_BASE_URL || "https://192.168.1.24:8000",
 );
 export default api;
