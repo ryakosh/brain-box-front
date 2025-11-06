@@ -50,3 +50,39 @@ export const extractValidationErrors = (
 
   return out;
 };
+
+export function isRetryableNetworkError(error: unknown): boolean {
+  // 1. Is it our custom APIError?
+  if (error instanceof APIError) {
+    // APIError means we got a response.
+    // Only retry 5xx server-down errors.
+    return error.status >= 500 && error.status <= 504;
+  }
+
+  // 2. Is it an AxiosError?
+  if (error && (error as AxiosError).isAxiosError) {
+    const axiosError = error as AxiosError;
+
+    // 3. No response means a true network failure
+    // (e.g., ERR_NETWORK, ERR_CONNECTION_REFUSED, timeout)
+    if (!axiosError.response) {
+      return true;
+    }
+
+    // 4. We got a response, but it's a 5xx (server down)
+    const statusCode = axiosError.response.status;
+    return statusCode >= 500 && statusCode <= 504;
+  }
+
+  // 5. Is it a generic Error (e.g., fetch failed)?
+  // This is a fallback.
+  if (
+    error instanceof Error &&
+    error.message.toLowerCase().includes("network")
+  ) {
+    return true;
+  }
+
+  // Not a network error, don't retry.
+  return false;
+}

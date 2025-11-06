@@ -21,12 +21,14 @@ export default function HomePage() {
   });
 
   const createEntryMutation = useMutation({
-    mutationFn: (entry: EntryCreate) => createEntry(entry),
-    onSuccess: () => {
-      showToast({ id: "create-entry", mode: "success" });
+    mutationKey: ["entries"],
+    mutationFn: (entryCreate: EntryCreate) => createEntry(entryCreate),
+    onMutate: () => {
       setDescription("");
+      showToast({ id: "create-entry", mode: "success" });
     },
-    onError: (error) => {
+    onError: (error, entryCreate) => {
+      setDescription(entryCreate.description);
       showToast({ id: "api-error", mode: "error", message: error.message });
     },
   });

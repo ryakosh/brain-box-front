@@ -1,29 +1,7 @@
 import axios, { type AxiosError, type AxiosInstance } from "axios";
-
-import { APIError } from "./errors";
 import { onlineManager } from "@tanstack/react-query";
 
-function isNetworkError(error: any): boolean {
-  // Axios-specific network error codes
-  if (error.code) {
-    return [
-      "ECONNABORTED", // Timeout
-      "ERR_NETWORK",
-      "ERR_CONNECTION_REFUSED",
-    ].includes(error.code);
-  }
-
-  if (error.response?.status) {
-    return [
-      500, // Internal Server Error
-      502, // Bad Gateway
-      503, // Service Unavailable
-      504, // Gateway Timeout
-    ].includes(error.response.status);
-  }
-
-  return false;
-}
+import { APIError, isRetryableNetworkError } from "./errors";
 
 const createAxios = (baseURL: string): AxiosInstance => {
   const instance = axios.create({
@@ -37,16 +15,13 @@ const createAxios = (baseURL: string): AxiosInstance => {
 
   instance.interceptors.response.use(
     (resp) => {
-      onlineManager.setOnline(true);
       return resp;
     },
     (error: AxiosError) => {
-      if (isNetworkError(error)) {
-        onlineManager.setOnline(false);
-      }
+      onlineManager.setOnline(!isRetryableNetworkError(error));
 
       if (error.response) {
-        throw APIError.fromAxios(error);
+        return Promise.reject(APIError.fromAxios(error));
       }
 
       // Network or other non-response error
@@ -58,6 +33,6 @@ const createAxios = (baseURL: string): AxiosInstance => {
 };
 
 export const api = createAxios(
-  import.meta.env.VITE_API_BASE_URL || "http://192.168.1.24:8000",
+  import.meta.env.VITE_API_BASE_URL || "https://192.168.1.24:8000",
 );
 export default api;

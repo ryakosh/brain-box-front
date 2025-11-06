@@ -3,10 +3,12 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "@/App";
 import "@/styles/globals.css";
-import { MutationCache, QueryClient } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { get, set, del } from "idb-keyval";
+import type { EntryCreate } from "./lib/api/types";
+import { createEntry } from "./lib/api/services/entries";
 
 const idbStorage = {
   setItem: (key: string, value: any) => set(key, value),
@@ -26,8 +28,17 @@ const queryClient = new QueryClient({
       staleTime: 2000,
       retry: 0,
     },
+
+    mutations: {
+      retry: true,
+    },
   },
-  mutationCache: new MutationCache({}),
+});
+
+queryClient.setMutationDefaults(["entries"], {
+  mutationFn: async (entry: EntryCreate) => {
+    return createEntry(entry);
+  },
 });
 
 createRoot(document.getElementById("root")).render(
