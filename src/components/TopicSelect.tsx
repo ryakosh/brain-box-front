@@ -1,59 +1,39 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { ChevronDown, Search, Loader2 } from "lucide-react";
 import type { TopicRead } from "@/lib/api/types";
-import { searchTopics } from "@/lib/api/services/topics";
-import { useToast } from "@/components/Toast";
-import { APIError } from "@/lib/api/errors";
 
 interface TopicSelectProps {
   onTopicChange: (topic: TopicRead | null) => void;
+  topics: TopicRead[];
 }
 
-export default function TopicSelect({ onTopicChange }: TopicSelectProps) {
+export default function TopicSelect({
+  onTopicChange,
+  topics,
+}: TopicSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<TopicRead[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<TopicRead | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { showToast } = useToast();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (searchQuery.length < 2) {
-      setIsLoading(false);
-      setSearchResults([]);
-
-      return;
-    }
+  const filteredTopics = useMemo(() => {
+    const lowerCaseQuery = searchQuery.trim().toLowerCase();
+    let results: TopicRead[] = [];
 
     setIsLoading(true);
 
-    const handler = setTimeout(async () => {
-      try {
-        const results = await searchTopics(searchQuery);
+    if (lowerCaseQuery.length >= 2) {
+      results = topics.filter((topic) =>
+        topic.name.toLowerCase().includes(lowerCaseQuery),
+      );
+    }
+    setIsLoading(false);
 
-        setSearchResults(results);
-      } catch (err: unknown) {
-        if (err instanceof APIError) {
-          showToast({ id: "api-error", mode: "error", message: err.message });
-        } else {
-          showToast({
-            id: "unexpected-error",
-            mode: "error",
-            message: "An unexpected error occurred",
-          });
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    }, 300);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchQuery, showToast]);
+    return results;
+  }, [topics, searchQuery]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -73,7 +53,6 @@ export default function TopicSelect({ onTopicChange }: TopicSelectProps) {
     onTopicChange(topic);
     setSelectedTopic(topic);
     setSearchQuery("");
-    setSearchResults([]);
     setIsOpen(false);
   };
 
@@ -117,9 +96,9 @@ export default function TopicSelect({ onTopicChange }: TopicSelectProps) {
           </div>
 
           <div className="max-h-60 overflow-y-auto mt-1">
-            {searchResults.length > 0 && (
+            {filteredTopics.length > 0 && (
               <ul className="space-y-1">
-                {searchResults.map((topic) => (
+                {filteredTopics.map((topic) => (
                   <li key={topic.id} className="mt-1 px-0.5">
                     <button
                       type="button"
@@ -138,7 +117,7 @@ export default function TopicSelect({ onTopicChange }: TopicSelectProps) {
 
             {searchQuery.length >= 2 &&
               !isLoading &&
-              searchResults.length === 0 && (
+              filteredTopics.length === 0 && (
                 <p className="p-2 text-sm">
                   No topics found for "{searchQuery}"
                 </p>

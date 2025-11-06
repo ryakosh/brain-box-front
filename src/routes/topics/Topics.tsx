@@ -8,7 +8,6 @@ import {
   getTopics,
 } from "@/lib/api/services/topics";
 import { useToast } from "@/components/Toast";
-import { Loader2 } from "lucide-react";
 import { useConfirm } from "@/components/ConfirmProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";

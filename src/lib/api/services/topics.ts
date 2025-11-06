@@ -65,6 +65,22 @@ export const getTopics = async (
   }
 };
 
+export const syncTopics = async (): Promise<TopicRead[]> => {
+  try {
+    const res = await api.get<TopicRead[]>(`${base}/sync`);
+
+    return res.data;
+  } catch (e) {
+    if (e instanceof APIError) throw e;
+
+    throw new APIError({
+      message: "Failed to sync topics",
+      status: 0,
+      original: e,
+    });
+  }
+};
+
 export const searchTopics = async (
   q: string,
   limit: number = 10,

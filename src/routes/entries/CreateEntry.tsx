@@ -5,12 +5,20 @@ import { useToast } from "@/components/Toast";
 import { createEntry } from "@/lib/api/services/entries";
 import TopicSelect from "@/components/TopicSelect";
 import type { EntryCreate, TopicRead } from "@/lib/api/types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { syncTopics } from "@/lib/api/services/topics";
 
 export default function HomePage() {
   const [description, setDescription] = useState("");
   const [topicID, setTopicID] = useState<number | null>(null);
   const { showToast } = useToast();
+
+  const { data: topics } = useQuery({
+    queryKey: ["topics"],
+    queryFn: () => syncTopics(),
+    gcTime: Infinity,
+    staleTime: 0,
+  });
 
   const createEntryMutation = useMutation({
     mutationFn: (entry: EntryCreate) => createEntry(entry),
@@ -56,7 +64,10 @@ export default function HomePage() {
         </div>
         <div className="flex h-14 my-2 gap-2">
           <div className="w-2/3">
-            <TopicSelect onTopicChange={handleTopicSelect} />
+            <TopicSelect
+              topics={topics ?? []}
+              onTopicChange={handleTopicSelect}
+            />
           </div>
 
           <button
