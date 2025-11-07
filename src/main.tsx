@@ -27,10 +27,13 @@ const queryClient = new QueryClient({
       gcTime: 1000 * 60 * 60 * 24, // 24 hours
       staleTime: 2000,
       retry: 0,
+      networkMode: "offlineFirst",
     },
 
     mutations: {
       retry: true,
+      gcTime: Infinity,
+      networkMode: "always",
     },
   },
 });
@@ -46,7 +49,7 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <PersistQueryClientProvider
         client={queryClient}
-        persistOptions={{ persister }}
+        persistOptions={{ persister, maxAge: Infinity }}
         onSuccess={() => {
           queryClient.resumePausedMutations().then(() => {
             queryClient.invalidateQueries();
