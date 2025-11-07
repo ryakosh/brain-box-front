@@ -26,7 +26,7 @@ export default function TopicsPage() {
   const { data: parentTopic, ...parentTopicQuery } = useQuery({
     queryKey: ["topics", parentId],
     queryFn: ({ queryKey }) => getTopic(queryKey[1] as number),
-    enabled: !Number.isNaN(parentId),
+    enabled: !!parentId && !Number.isNaN(parentId),
   });
   const { data: subTopics, ...subTopicsQuery } = useQuery({
     queryKey: ["subTopics", parentId],
@@ -58,6 +58,7 @@ export default function TopicsPage() {
     onError: (error) => {
       showToast({ id: "api-error", mode: "error", message: error.message });
     },
+    gcTime: Infinity,
   });
 
   const handleTopicClick = (topic: TopicReadWithCounts) => {
