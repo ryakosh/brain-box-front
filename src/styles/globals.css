@@ -30,3 +30,21 @@
   --color-accent-aqua: #8ec07c;
   --color-accent-orange: #fe8019;
 }
+
+@font-face {
+  font-family: "Nunito";
+  src: url("/Nunito-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@layer base {
+  body {
+    @apply transition-colors duration-200 ease-out;
+  }
+}
+
+body {
+  font-family: "Nunito", sans-serif;
+  font-size: 20px;
+}

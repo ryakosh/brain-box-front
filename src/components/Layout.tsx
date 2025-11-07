@@ -10,7 +10,7 @@ export default function RootLayout() {
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <ToastProvider>
         <ConfirmProvider>
-          <div className="flex flex-col md:flex-row w-full h-full min-h-0">
+          <div className="flex flex-col md:flex-row w-full h-full min-h-0 ">
             <div className="hidden md:flex flex-col justify-center md:w-2xs lg:w-sm h-full">
               <NavigationMenu />
             </div>

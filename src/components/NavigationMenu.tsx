@@ -81,7 +81,7 @@ export default function NavigationMenu({ onClose }: NavigationMenuProps) {
 
   return (
     <div className="absolute md:static bottom-full left-0 w-full md:h-full origin-bottom-left">
-      <div className="p-2 bg-bg rounded-md shadow-md mb-1 md:h-full transition-all duration-200 ease-out animate-in fade-in-0 zoom-in-95">
+      <div className="p-2 bg-bg rounded-md shadow-md mb-1 md:h-full transition-colors duration-200 ease-out">
         <header className="flex items-center justify-between pb-1 mb-1">
           <div className="flex items-center text-lg font-bold ml-1">
             {history.length > 1 && (
