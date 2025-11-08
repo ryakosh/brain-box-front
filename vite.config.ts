@@ -13,6 +13,13 @@ export default defineConfig({
       registerType: "autoUpdate",
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2,ttf}"],
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.startsWith("/api/health"),
+            handler: "NetworkOnly",
+            method: "HEAD",
+          },
+        ],
       },
       manifest: {
         name: "Brain Box",

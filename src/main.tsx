@@ -9,6 +9,42 @@ import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persi
 import { get, set, del } from "idb-keyval";
 import type { EntryCreate } from "./lib/api/types";
 import { createEntry } from "./lib/api/services/entries";
+import { onlineManager } from "@tanstack/react-query";
+
+onlineManager.setEventListener((setOnline) => {
+  const checkApiStatus = async () => {
+    try {
+      const response = await fetch(HEALTH_CHECK_URL, {
+        method: "HEAD",
+
+        cache: "no-store",
+      });
+
+      return response.ok;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  const interval = setInterval(async () => {
+    const isOnline = await checkApiStatus();
+    setOnline(isOnline);
+  }, 3000);
+
+  const onlineHandler = () => checkApiStatus().then(setOnline);
+  window.addEventListener("online", onlineHandler);
+
+  const offlineHandler = () => setOnline(false);
+  window.addEventListener("offline", offlineHandler);
+
+  onlineHandler();
+
+  return () => {
+    clearInterval(interval);
+    window.removeEventListener("online", onlineHandler);
+    window.removeEventListener("offline", offlineHandler);
+  };
+});
 
 const idbStorage = {
   setItem: (key: string, value: any) => set(key, value),
@@ -25,15 +61,11 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       gcTime: 1000 * 60 * 60 * 24, // 24 hours
-      staleTime: 2000,
-      retry: 0,
-      networkMode: "offlineFirst",
     },
 
     mutations: {
       retry: true,
       gcTime: Infinity,
-      networkMode: "always",
     },
   },
 });

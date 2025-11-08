@@ -17,7 +17,7 @@ export default function HomePage() {
     queryKey: ["topics"],
     queryFn: () => syncTopics(),
     gcTime: Infinity,
-    staleTime: 2000,
+    staleTime: 0,
   });
 
   const createEntryMutation = useMutation({
