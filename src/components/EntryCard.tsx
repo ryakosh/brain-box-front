@@ -22,14 +22,14 @@ const EntryCard = React.memo(({ entry, onClick, onDelete }: EntryCardProps) => {
   return (
     <div
       onClick={() => onClick(entry)}
-      className="w-full bg-bg rounded-md p-4 shadow-md"
+      className="w-full bg-bg rounded-md p-4 shadow-md cursor-pointer"
     >
       <div
-        className="text-fg mb-3 [&>b]:text-accent-green"
+        className="text-fg mb-3 [&>b]:text-accent-green text-md md:text-lg"
         dangerouslySetInnerHTML={{ __html: cleanDescription }}
       />
       <div className="flex justify-between">
-        <div className="flex items-center gap-2 text-sm text-accent-blue">
+        <div className="flex items-center gap-2 text-md md:text-lg text-accent-blue">
           <Tag size={20} />
           <span className="font-semibold">{entry.topic.name}</span>
         </div>

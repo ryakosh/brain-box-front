@@ -112,10 +112,10 @@ function ToastItem({ mode, message }: Toast) {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: "100%", opacity: 0 }}
       transition={{ type: "spring", stiffness: 500, damping: 40 }}
-      className={`${colors[mode]} rounded-l-md shadow-md flex items-center px-2 py-2 min-h-[40px] max-w-sm ml-1 mb-2`}
+      className={`${colors[mode]} rounded-l-md shadow-md flex items-center px-2 py-2 min-h-[40px] max-w-sm md:max-w-lg ml-1 mb-2`}
     >
       <span className="mr-2">{icons[mode]}</span>
-      {message && <p className="font-bold text-lg">{message}</p>}
+      {message && <p className="font-bold text-lg md:text-2xl">{message}</p>}
     </motion.div>
   );
 }

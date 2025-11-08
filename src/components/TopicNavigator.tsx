@@ -20,7 +20,11 @@ export default function TopicNavigator({
 }: TopicNavigatorProps) {
   const renderContent = () => {
     if (topics.length === 0) {
-      return <p className="text-center text-fg-muted p-6">No subtopics.</p>;
+      return (
+        <p className="text-center text-md md:text-lg text-fg-muted p-6">
+          No subtopics.
+        </p>
+      );
     }
     return (
       <ul className="space-y-1 overflow-auto h-full">
@@ -34,12 +38,12 @@ export default function TopicNavigator({
                   "w-full flex items-center justify-between text-left p-3 rounded-md transition-colors cursor-pointer hover:bg-bg-soft"
                 }
               >
-                <span className="text-fg">{topic.name}</span>
+                <span className="text-fg text-md md:text-lg">{topic.name}</span>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-semibold text-fg-muted">
+                  <span className="text-md md:text-lg font-semibold text-fg-muted">
                     {topic.children_count}
                   </span>
-                  <ChevronRight size={18} className="text-fg-muted" />
+                  <ChevronRight size={20} className="text-fg-muted" />
                 </div>
               </button>
               <button
@@ -74,11 +78,11 @@ export default function TopicNavigator({
               <ChevronLeft className="text-fg-muted" size={20} />
             </button>
           )}
-          <h2 className="text-lg font-bold text-fg">
+          <h2 className="text-lg md:text-xl font-bold text-fg">
             {parentTopic?.name ?? "Root Topics"}
           </h2>
         </div>
-        <span className="text-sm font-medium bg-fg-soft text-fg-muted px-2 py-1 rounded-md">
+        <span className="text-md md:text-lg font-medium bg-fg-soft text-fg-muted px-2 py-1 rounded-md">
           {topics.length}
         </span>
       </div>

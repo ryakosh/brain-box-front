@@ -50,7 +50,7 @@ const DialogContent = ({
 }: {
   children: React.ReactNode;
   className?: string;
-}) => <div className={cn(className)}>{children}</div>;
+}) => <div className={cn("text-md md:text-lg", className)}>{children}</div>;
 
 const DialogHeader = ({
   className,
@@ -74,7 +74,10 @@ const DialogTitle = ({
   ...props
 }: React.HTMLAttributes<HTMLHeadingElement>) => (
   <h2
-    className={cn("text-lg font-bold font-semibold text-fg ml-1", className)}
+    className={cn(
+      "text-lg md:text-2xl font-bold font-semibold text-fg ml-1",
+      className,
+    )}
     {...props}
   />
 );

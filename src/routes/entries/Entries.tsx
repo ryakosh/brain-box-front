@@ -64,7 +64,7 @@ export default function SearchPage() {
   const renderContent = () => {
     if (searchTerm.length <= 2) {
       return (
-        <p className="text-center text-fg-muted p-6">
+        <p className="text-center text-fg-muted p-6 text-md md:text-lg">
           Use the search bar below to find your entries.
         </p>
       );
@@ -72,7 +72,7 @@ export default function SearchPage() {
 
     if (entries?.length === 0) {
       return (
-        <p className="text-center text-fg-muted p-6">
+        <p className="text-center text-fg-muted p-6 text-md md:text-lg">
           No results found, try a different search term.
         </p>
       );
@@ -94,7 +94,9 @@ export default function SearchPage() {
 
   return (
     <div className="flex flex-col h-full w-full">
-      <h1 className="font-bold text-2xl mx-1 my-3 text-fg">Search Entries</h1>
+      <h1 className="font-bold text-xl md:text-2xl mx-1 my-3 text-fg">
+        Search Entries
+      </h1>
       <div className="mx-1 mt-1 mb-3 flex-1 min-h-0">
         <div className="flex flex-col bg-bg-hard rounded-md shadow-md h-full overflow-auto w-full mx-auto">
           {entriesQuery.isError && (
@@ -104,7 +106,9 @@ export default function SearchPage() {
           {!entriesQuery.isError && !entriesQuery.isLoading && (
             <>
               <div className="flex items-center justify-between p-4">
-                <h2 className="text-lg font-bold text-fg">Results</h2>
+                <h2 className="text-lg md:text-xl font-bold text-fg">
+                  Results
+                </h2>
               </div>
               <div className="p-2 w-full min-h-0 flex-1">{renderContent()}</div>
             </>

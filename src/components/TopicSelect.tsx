@@ -66,7 +66,7 @@ export default function TopicSelect({
       <button
         type="button"
         onClick={handleOpen}
-        className="w-full h-full flex items-center justify-between text-lg font-semibold p-2 bg-accent-blue rounded-md m-1 shadow-md text-left cursor-pointer"
+        className="w-full h-full flex items-center justify-between text-lg md:text-2xl font-semibold p-2 bg-accent-blue rounded-md m-1 shadow-md text-left cursor-pointer"
       >
         <span>{selectedTopic ? selectedTopic.name : "Select a Topic..."}</span>
         <ChevronDown size={20} />
@@ -85,11 +85,11 @@ export default function TopicSelect({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for a topic..."
-              className="w-full bg-bg text-lg rounded-md p-2 pl-10 focus:outline-none"
+              className="w-full bg-bg text-lg md:text-2xl rounded-md p-2 pl-10 focus:outline-none"
             />
             {isLoading && (
               <Loader2
-                size={18}
+                size={20}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-muted animate-spin"
               />
             )}
@@ -105,10 +105,12 @@ export default function TopicSelect({
                       onClick={() => handleSelect(topic)}
                       className="w-full text-left bg-bg p-1 rounded-md hover:opacity-70 cursor-pointer"
                     >
-                      <div className="flex-inline items-center text-xs w-fit px-2 rounded-sm text-accent-yellow uppercase">
+                      <div className="flex-inline items-center text-sm md:text-md w-fit px-2 rounded-sm text-accent-yellow uppercase">
                         {topic.parent?.name ?? "ROOT"}
                       </div>
-                      <div className="overflow-x-auto">{topic.name}</div>
+                      <div className="overflow-x-auto text-md md:text-xl">
+                        {topic.name}
+                      </div>
                     </button>
                   </li>
                 ))}
@@ -118,7 +120,7 @@ export default function TopicSelect({
             {searchQuery.length >= 2 &&
               !isLoading &&
               filteredTopics.length === 0 && (
-                <p className="p-2 text-sm">
+                <p className="p-2 text-sm md:text:lg">
                   No topics found for "{searchQuery}"
                 </p>
               )}

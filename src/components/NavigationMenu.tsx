@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 
 const items: MenuItem[] = [
   {
-    id: "home",
-    label: "Home",
+    id: "create-entry",
+    label: "Create Entry",
     action: "/",
   },
   {
@@ -93,7 +93,7 @@ export default function NavigationMenu({ onClose }: NavigationMenuProps) {
                 <ArrowLeft size={20} />
               </button>
             )}
-            <h2 className="text-md font-bold text-fg">Menu</h2>
+            <h2 className="text-md md:text-xl font-bold text-fg">Menu</h2>
           </div>
 
           {onClose && (
@@ -113,7 +113,7 @@ export default function NavigationMenu({ onClose }: NavigationMenuProps) {
               <button
                 type="button"
                 onClick={() => handleItemClick(item)}
-                className="w-full flex justify-between items-center text-left p-2 text-fg cursor-pointer"
+                className="w-full flex justify-between text-md md:text-lg items-center text-left p-2 text-fg cursor-pointer"
               >
                 <span>{item.label}</span>
                 {item.subItems && (

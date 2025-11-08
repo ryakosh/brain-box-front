@@ -88,7 +88,7 @@ export default function TopicsPage() {
     const accepted = await confirm({
       title: "Delete this topic?",
       description:
-        "This will permanently delete the topic and all of its entries, its subtopics and their entries remain intact.",
+        "This will permanently delete the topic and all of its entries, including its subtopics and their entries.",
       confirmLabel: "Delete",
       rejectLabel: "Cancel",
     });
@@ -100,7 +100,9 @@ export default function TopicsPage() {
 
   return (
     <div className="flex flex-col h-full w-full">
-      <h1 className="font-bold text-2xl mx-1 my-3 text-fg">Manage Topics</h1>
+      <h1 className="font-bold text-xl md:text-2xl mx-1 my-3 text-fg">
+        Manage Topics
+      </h1>
       <div className="mx-1 mt-1 mb-3 flex-1 min-h-0">
         <div className="flex flex-col bg-bg-hard rounded-md shadow-md h-full overflow-auto w-full mx-auto">
           {parentTopicQuery.isError && subTopicsQuery.isError && (

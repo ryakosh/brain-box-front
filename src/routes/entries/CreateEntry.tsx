@@ -57,7 +57,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col h-full">
-      <h1 className="font-bold text-2xl mx-1 my-3 text-fg">
+      <h1 className="font-bold text-xl md:text-2xl mx-1 my-3 text-fg">
         What's on your mind?
       </h1>
       <form className="flex flex-col h-full" onSubmit={handleSubmit}>
@@ -74,7 +74,7 @@ export default function HomePage() {
 
           <button
             type="submit"
-            className="flex flex-1 h-full m-1 items-center justify-center text-lg font-semibold bg-accent-orange hover:opacity-90 transition-opacity rounded-md shadow-md cursor-pointer"
+            className="flex flex-1 h-full m-1 items-center justify-center text-lg md:text-2xl font-semibold bg-accent-orange hover:opacity-90 transition-opacity rounded-md shadow-md cursor-pointer"
           >
             <Send size={24} />
             Submit

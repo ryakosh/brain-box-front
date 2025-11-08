@@ -9,7 +9,7 @@ export default function TextEditor({ value, onChange }: TextEditorProps) {
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder="..."
-      className="w-full h-full text-fg font-medium bg-bg-hard shadow-md rounded-md placeholder:text-fg-muted text-xl resize-none p-2 focus:outline-none"
+      className="w-full h-full text-fg font-medium bg-bg-hard shadow-md rounded-md placeholder:text-fg-muted text-lg md:text-xl resize-none p-2 focus:outline-none"
     />
   );
 }
