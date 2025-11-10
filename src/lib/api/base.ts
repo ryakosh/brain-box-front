@@ -1,5 +1,4 @@
 import axios, { type AxiosError, type AxiosInstance } from "axios";
-import { onlineManager } from "@tanstack/react-query";
 
 import { APIError, isRetryableNetworkError } from "./errors";
 
@@ -18,8 +17,6 @@ const createAxios = (baseURL: string): AxiosInstance => {
       return resp;
     },
     (error: AxiosError) => {
-      onlineManager.setOnline(!isRetryableNetworkError(error));
-
       if (error.response) {
         return Promise.reject(APIError.fromAxios(error));
       }

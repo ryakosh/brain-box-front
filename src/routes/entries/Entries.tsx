@@ -99,11 +99,8 @@ export default function SearchPage() {
       </h1>
       <div className="mx-1 mt-1 mb-3 flex-1 min-h-0">
         <div className="flex flex-col bg-bg-hard rounded-md shadow-md h-full overflow-auto w-full mx-auto">
-          {entriesQuery.isError && (
-            <PageError>{entriesQuery.error?.message}</PageError>
-          )}
-          {entriesQuery.isLoading && <PageLoading />}
-          {!entriesQuery.isError && !entriesQuery.isLoading && (
+          {entriesQuery.isLoading && !entries && <PageLoading />}
+          {entries && (
             <>
               <div className="flex items-center justify-between p-4">
                 <h2 className="text-lg md:text-xl font-bold text-fg">
@@ -112,6 +109,9 @@ export default function SearchPage() {
               </div>
               <div className="p-2 w-full min-h-0 flex-1">{renderContent()}</div>
             </>
+          )}
+          {entriesQuery.isError && (
+            <PageError>{entriesQuery.error?.message}</PageError>
           )}
         </div>
       </div>

@@ -105,15 +105,10 @@ export default function TopicsPage() {
       </h1>
       <div className="mx-1 mt-1 mb-3 flex-1 min-h-0">
         <div className="flex flex-col bg-bg-hard rounded-md shadow-md h-full overflow-auto w-full mx-auto">
-          {parentTopicQuery.isError && subTopicsQuery.isError && (
-            <PageError>
-              {(parentTopicQuery.error || subTopicsQuery.error).message}
-            </PageError>
-          )}
-          {parentTopicQuery.isLoading && subTopicsQuery.isLoading && (
-            <PageLoading />
-          )}
-          {subTopicsQuery.isSuccess && (
+          {parentTopicQuery.isLoading &&
+            subTopicsQuery.isLoading &&
+            !subTopics && <PageLoading />}
+          {subTopics && (
             <TopicNavigator
               parentTopic={parentTopic ?? null}
               topics={subTopics ?? []}
@@ -122,6 +117,11 @@ export default function TopicsPage() {
               onBackClick={handleBackClick}
               onDelete={handleDelete}
             />
+          )}
+          {(parentTopicQuery.isError || subTopicsQuery.isError) && (
+            <PageError>
+              {(parentTopicQuery.error || subTopicsQuery.error)?.message}
+            </PageError>
           )}
         </div>
       </div>

@@ -10,13 +10,16 @@ import { get, set, del } from "idb-keyval";
 import type { EntryCreate } from "./lib/api/types";
 import { createEntry } from "./lib/api/services/entries";
 import { onlineManager } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
+const HEALTH_CHECK_URL = "https://192.168.1.24:8000/api/health";
+
+onlineManager.setOnline(false);
 onlineManager.setEventListener((setOnline) => {
   const checkApiStatus = async () => {
     try {
       const response = await fetch(HEALTH_CHECK_URL, {
         method: "HEAD",
-
         cache: "no-store",
       });
 
@@ -29,15 +32,13 @@ onlineManager.setEventListener((setOnline) => {
   const interval = setInterval(async () => {
     const isOnline = await checkApiStatus();
     setOnline(isOnline);
-  }, 3000);
+  }, 5000);
 
   const onlineHandler = () => checkApiStatus().then(setOnline);
   window.addEventListener("online", onlineHandler);
 
   const offlineHandler = () => setOnline(false);
   window.addEventListener("offline", offlineHandler);
-
-  onlineHandler();
 
   return () => {
     clearInterval(interval);
@@ -61,6 +62,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       gcTime: 1000 * 60 * 60 * 24, // 24 hours
+      retry: 0,
     },
 
     mutations: {
@@ -81,7 +83,16 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <PersistQueryClientProvider
         client={queryClient}
-        persistOptions={{ persister, maxAge: Infinity }}
+        persistOptions={{
+          persister,
+          maxAge: Infinity,
+          dehydrateOptions: {
+            shouldDehydrateQuery: (query) =>
+              query.state.status === "success" ||
+              // 👇 This is the magic line
+              (query.state.status === "error" && !!query.state.data),
+          },
+        }}
         onSuccess={() => {
           queryClient.resumePausedMutations().then(() => {
             queryClient.invalidateQueries();
@@ -89,6 +100,7 @@ createRoot(document.getElementById("root")).render(
         }}
       >
         <App />
+        <ReactQueryDevtools initialIsOpen={false} />
       </PersistQueryClientProvider>
     </BrowserRouter>
   </React.StrictMode>,

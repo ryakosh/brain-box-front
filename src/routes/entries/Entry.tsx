@@ -24,11 +24,8 @@ export default function EntryPage() {
       </h1>
       <div className="mx-1 mt-1 mb-3 flex-1 min-h-0">
         <div className="flex flex-col bg-bg-hard rounded-md shadow-md h-full overflow-auto w-full mx-auto">
-          {entryQuery.isError && (
-            <PageError>{entryQuery.error?.message}</PageError>
-          )}
-          {entryQuery.isLoading && <PageLoading />}
-          {entryQuery.isSuccess && (
+          {entryQuery.isLoading && !entry && <PageLoading />}
+          {entry && (
             <>
               <div className="flex items-center justify-between p-4">
                 <h2 className="text-lg md:text-xl font-bold text-fg">
@@ -40,6 +37,9 @@ export default function EntryPage() {
                 {!entryQuery.isLoading && <div>{entry?.description}</div>}
               </div>
             </>
+          )}
+          {entryQuery.isError && (
+            <PageError>{entryQuery.error.message}</PageError>
           )}
         </div>
       </div>
