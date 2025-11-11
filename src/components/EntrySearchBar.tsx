@@ -3,22 +3,19 @@ import { Search, X } from "lucide-react";
 import { useOnClickOutside } from "@/lib/hooks";
 
 interface EntrySearchBarProps {
-  onSearchChange: (query: string) => void;
+  onChange: (query: string) => void;
+  value: string;
 }
 
 export default function EntrySearchBar({
-  onSearchChange,
+  onChange,
+  value,
 }: EntrySearchBarProps) {
   const [isActive, setIsActive] = useState(false);
-  const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useOnClickOutside(containerRef, () => setIsActive(false));
-
-  useEffect(() => {
-    onSearchChange(query);
-  }, [query, onSearchChange]);
 
   const handleActivate = () => {
     setIsActive(true);
@@ -26,7 +23,7 @@ export default function EntrySearchBar({
   };
 
   const handleClear = () => {
-    setQuery("");
+    onChange("");
   };
 
   if (!isActive) {
@@ -48,12 +45,12 @@ export default function EntrySearchBar({
       <input
         ref={inputRef}
         type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         placeholder="Type to search entries..."
         className="w-full bg-accent-orange h-14 text-lg md:text-2xl rounded-md py-3 pl-10 pr-10 focus:outline-none"
       />
-      {query && (
+      {value && (
         <button
           type="button"
           onClick={handleClear}
