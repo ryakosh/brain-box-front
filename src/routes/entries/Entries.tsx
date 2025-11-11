@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
+import { useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
 import EntrySearchBar from "@/components/EntrySearchBar";
 import EntryCard from "@/components/EntryCard";
 import { deleteEntry, searchEntries } from "@/lib/api/services/entries";
@@ -7,24 +7,34 @@ import type { EntryRead } from "@/lib/api/types";
 import { useToast } from "@/components/Toast";
 import { useConfirm } from "@/components/ConfirmProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import PageError from "@/components/PageError";
 import PageLoading from "@/components/PageLoading";
 
 export default function SearchPage() {
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState<string>(
+    searchParams.get("q") ?? "",
+  );
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const confirm = useConfirm();
   const navigate = useNavigate();
 
   const { data: entries, ...entriesQuery } = useQuery({
-    queryKey: ["entries", searchTerm],
+    queryKey: ["entries", debouncedSearchTerm],
     queryFn: ({ queryKey }) => searchEntries(queryKey[1]),
     staleTime: 0,
     gcTime: 0,
-    enabled: searchTerm?.length >= 3,
+    enabled: debouncedSearchTerm?.length >= 3,
   });
+
+  useEffect(() => {
+    if (entries && entries.length > 0) {
+      setSearchParams({ q: searchTerm }, { replace: true });
+    }
+  }, [entries, setSearchParams, searchTerm]);
 
   const deleteEntryMutation = useMutation({
     mutationFn: (entry: EntryRead) => deleteEntry(entry.id),
@@ -57,9 +67,9 @@ export default function SearchPage() {
     }
   };
 
-  const handleSearchChange = useDebouncedCallback(async (st: string) => {
+  const handleSearchChange = async (st: string) => {
     setSearchTerm(st);
-  }, 300);
+  };
 
   const renderContent = () => {
     if (searchTerm.length <= 2) {
@@ -100,7 +110,7 @@ export default function SearchPage() {
       <div className="mx-1 mt-1 mb-3 flex-1 min-h-0">
         <div className="flex flex-col bg-bg-hard rounded-md shadow-md h-full overflow-auto w-full mx-auto">
           {entriesQuery.isLoading && !entries && <PageLoading />}
-          {entries && (
+          {!entriesQuery.isLoading && (
             <>
               <div className="flex items-center justify-between p-4">
                 <h2 className="text-lg md:text-xl font-bold text-fg">
@@ -116,7 +126,7 @@ export default function SearchPage() {
         </div>
       </div>
       <div className="my-1 mx-1">
-        <EntrySearchBar onSearchChange={handleSearchChange} />
+        <EntrySearchBar onChange={handleSearchChange} value={searchTerm} />
       </div>
     </div>
   );
