@@ -2,7 +2,7 @@ import api from "@/lib/api/base";
 import { APIError } from "@/lib/api/errors";
 import type { EntryCreate, EntryRead, EntryUpdate } from "@/lib/api/types";
 
-const base = "/api/entries";
+const base = "/entries";
 
 export const createEntry = async (payload: EntryCreate): Promise<EntryRead> => {
   try {

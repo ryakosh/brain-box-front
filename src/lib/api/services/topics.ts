@@ -7,7 +7,7 @@ import type {
   TopicUpdate,
 } from "../types";
 
-const base = "/api/topics";
+const base = "/topics";
 
 export const createTopic = async (payload: TopicCreate): Promise<TopicRead> => {
   try {

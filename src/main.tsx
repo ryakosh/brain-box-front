@@ -12,7 +12,7 @@ import { createEntry } from "./lib/api/services/entries";
 import { onlineManager } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-const HEALTH_CHECK_URL = "https://192.168.1.24:8000/api/health";
+const HEALTH_CHECK_URL = "/api/health";
 
 onlineManager.setOnline(false);
 onlineManager.setEventListener((setOnline) => {

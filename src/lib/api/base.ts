@@ -1,6 +1,6 @@
 import axios, { type AxiosError, type AxiosInstance } from "axios";
 
-import { APIError, isRetryableNetworkError } from "./errors";
+import { APIError } from "./errors";
 
 const createAxios = (baseURL: string): AxiosInstance => {
   const instance = axios.create({
@@ -29,7 +29,5 @@ const createAxios = (baseURL: string): AxiosInstance => {
   return instance;
 };
 
-export const api = createAxios(
-  import.meta.env.VITE_API_BASE_URL || "https://192.168.1.24:8000",
-);
+export const api = createAxios("/api");
 export default api;
