@@ -1,6 +1,13 @@
-import axios, { type AxiosError, type AxiosInstance } from "axios";
+import axios, {
+  type InternalAxiosRequestConfig,
+  type AxiosError,
+  type AxiosInstance,
+  type AxiosResponse,
+} from "axios";
 
-import { APIError } from "./errors";
+import { APIError } from "@/lib/api/errors";
+import { authManager } from "@/lib/auth/base";
+import { TokenRefreshError } from "../auth/errors";
 
 const createAxios = (baseURL: string): AxiosInstance => {
   const instance = axios.create({
@@ -12,11 +19,48 @@ const createAxios = (baseURL: string): AxiosInstance => {
     },
   });
 
+  instance.interceptors.request.use(
+    (config: InternalAxiosRequestConfig) => {
+      const token = authManager.getToken();
+
+      if (token && !config.headers.Authorization) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+
+      return config;
+    },
+    (error) => Promise.reject(error),
+  );
+
   instance.interceptors.response.use(
-    (resp) => {
+    (resp: AxiosResponse) => {
       return resp;
     },
-    (error: AxiosError) => {
+    async (error: AxiosError) => {
+      const originalRequest = error.config as InternalAxiosRequestConfig & {
+        _retry?: boolean;
+      };
+
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+
+        try {
+          const newToken = await authManager.refreshToken();
+
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          }
+
+          return api(originalRequest);
+        } catch (error: unknown) {
+          if (error instanceof TokenRefreshError) {
+            window.location.href = "/auth/login";
+          }
+
+          return Promise.reject(error);
+        }
+      }
+
       if (error.response) {
         return Promise.reject(APIError.fromAxios(error));
       }
