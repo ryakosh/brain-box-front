@@ -7,10 +7,14 @@ import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { get, set, del } from "idb-keyval";
-import type { EntryCreate } from "./lib/api/types";
-import { createEntry } from "./lib/api/services/entries";
+import type { EntryCreate } from "@/lib/api/types";
+import { createEntry } from "@/lib/api/services/entries";
 import { onlineManager } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { AuthProvider } from "@/context/AuthContext";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { ToastProvider } from "@/components/Toast";
+import { ConfirmProvider } from "@/components/ConfirmProvider";
 
 const HEALTH_CHECK_URL = "/api/health";
 
@@ -81,27 +85,34 @@ queryClient.setMutationDefaults(["entries"], {
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <PersistQueryClientProvider
-        client={queryClient}
-        persistOptions={{
-          persister,
-          maxAge: Infinity,
-          dehydrateOptions: {
-            shouldDehydrateQuery: (query) =>
-              query.state.status === "success" ||
-              // 👇 This is the magic line
-              (query.state.status === "error" && !!query.state.data),
-          },
-        }}
-        onSuccess={() => {
-          queryClient.resumePausedMutations().then(() => {
-            queryClient.invalidateQueries();
-          });
-        }}
-      >
-        <App />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </PersistQueryClientProvider>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ToastProvider>
+          <ConfirmProvider>
+            <AuthProvider>
+              <PersistQueryClientProvider
+                client={queryClient}
+                persistOptions={{
+                  persister,
+                  maxAge: Infinity,
+                  dehydrateOptions: {
+                    shouldDehydrateQuery: (query) =>
+                      query.state.status === "success" ||
+                      (query.state.status === "error" && !!query.state.data),
+                  },
+                }}
+                onSuccess={() => {
+                  queryClient.resumePausedMutations().then(() => {
+                    queryClient.invalidateQueries();
+                  });
+                }}
+              >
+                <App />
+                <ReactQueryDevtools initialIsOpen={false} />
+              </PersistQueryClientProvider>
+            </AuthProvider>
+          </ConfirmProvider>
+        </ToastProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );
