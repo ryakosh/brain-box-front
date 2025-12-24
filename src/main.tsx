@@ -88,28 +88,28 @@ createRoot(document.getElementById("root")).render(
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <ToastProvider>
           <ConfirmProvider>
-            <AuthProvider>
-              <PersistQueryClientProvider
-                client={queryClient}
-                persistOptions={{
-                  persister,
-                  maxAge: Infinity,
-                  dehydrateOptions: {
-                    shouldDehydrateQuery: (query) =>
-                      query.state.status === "success" ||
-                      (query.state.status === "error" && !!query.state.data),
-                  },
-                }}
-                onSuccess={() => {
-                  queryClient.resumePausedMutations().then(() => {
-                    queryClient.invalidateQueries();
-                  });
-                }}
-              >
+            <PersistQueryClientProvider
+              client={queryClient}
+              persistOptions={{
+                persister,
+                maxAge: Infinity,
+                dehydrateOptions: {
+                  shouldDehydrateQuery: (query) =>
+                    query.state.status === "success" ||
+                    (query.state.status === "error" && !!query.state.data),
+                },
+              }}
+              onSuccess={() => {
+                queryClient.resumePausedMutations().then(() => {
+                  queryClient.invalidateQueries();
+                });
+              }}
+            >
+              <AuthProvider>
                 <App />
-                <ReactQueryDevtools initialIsOpen={false} />
-              </PersistQueryClientProvider>
-            </AuthProvider>
+              </AuthProvider>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </PersistQueryClientProvider>
           </ConfirmProvider>
         </ToastProvider>
       </ThemeProvider>

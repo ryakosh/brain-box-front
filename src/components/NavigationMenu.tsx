@@ -1,8 +1,6 @@
-"use client";
-
 import { useState } from "react";
 import { useTheme } from "next-themes";
-import { X, ArrowLeft, ChevronRight } from "lucide-react";
+import { X, ArrowLeft, ChevronRight, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const items: MenuItem[] = [
@@ -41,9 +39,13 @@ export interface MenuItem {
 
 interface NavigationMenuProps {
   onClose?: () => void;
+  onLogout?: () => void;
 }
 
-export default function NavigationMenu({ onClose }: NavigationMenuProps) {
+export default function NavigationMenu({
+  onClose,
+  onLogout,
+}: NavigationMenuProps) {
   const [history, setHistory] = useState<MenuItem[][]>([items]);
   const { setTheme } = useTheme();
   const navigate = useNavigate();
@@ -96,15 +98,27 @@ export default function NavigationMenu({ onClose }: NavigationMenuProps) {
             <h2 className="text-md md:text-xl font-bold text-fg">Menu</h2>
           </div>
 
-          {onClose && (
-            <button
-              type="button"
-              onClick={onClose}
-              className="cursor-pointer p-2 text-fg-muted"
-            >
-              <X size={20} />
-            </button>
-          )}
+          <div className="flex justify-between gap-2">
+            {onLogout && (
+              <button
+                type="button"
+                onClick={onLogout}
+                className="cursor-pointer p-1 text-fg-muted"
+              >
+                <LogOut size={20} />
+              </button>
+            )}
+
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="cursor-pointer p-1 text-fg-muted"
+              >
+                <X size={20} />
+              </button>
+            )}
+          </div>
         </header>
 
         <ul className="space-y-1">

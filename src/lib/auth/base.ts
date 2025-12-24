@@ -35,7 +35,7 @@ class AuthManager {
   }
 
   /**
-   * Authenticates a user with the backend.
+   * Authenticates the user with the backend.
    *
    * @param {LoginForm} loginForm - The username and password.
    * @returns {Promise<string>} The new access token.
@@ -53,6 +53,16 @@ class AuthManager {
     } catch (_: unknown) {
       throw new LoginError();
     }
+  }
+
+  /**
+   * Logs the user out.
+   */
+  public async logout(): Promise<void> {
+    await authAPI.post("/logout");
+
+    this.token = null;
+    this.refreshPromise = null;
   }
 
   /**
@@ -75,7 +85,7 @@ class AuthManager {
 
         return newToken;
       } catch (_: unknown) {
-        this.token = null;
+        this.logout();
 
         throw new TokenRefreshError();
       } finally {
