@@ -7,7 +7,6 @@ import PageLoading from "@/components/PageLoading";
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
   const { showToast } = useToast();
   const { login, isLoading } = useAuth();
 
@@ -30,6 +29,12 @@ export default function LoginPage() {
       if (error instanceof AuthError) {
         showToast({ id: "auth-error", mode: "error", message: error.message });
       } else {
+        showToast({
+          id: "auth-error",
+          mode: "error",
+          message: "An unexpected error occurred.",
+        });
+
         throw error;
       }
     }

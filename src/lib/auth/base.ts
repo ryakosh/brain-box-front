@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 import type { LoginForm, TokenRead } from "@/lib/auth/types";
 import { LoginError, TokenRefreshError } from "@/lib/auth/errors";
@@ -50,8 +50,12 @@ class AuthManager {
       this.token = data.token;
 
       return this.token;
-    } catch (_: unknown) {
-      throw new LoginError();
+    } catch (error: unknown) {
+      if (error instanceof AxiosError && error.status === 401) {
+        throw new LoginError();
+      }
+
+      throw error;
     }
   }
 
@@ -84,10 +88,13 @@ class AuthManager {
         this.token = newToken;
 
         return newToken;
-      } catch (_: unknown) {
-        this.logout();
+      } catch (error: unknown) {
+        if (error instanceof AxiosError && error.status === 401) {
+          this.logout();
+          throw new TokenRefreshError();
+        }
 
-        throw new TokenRefreshError();
+        throw error;
       } finally {
         this.refreshPromise = null;
       }
