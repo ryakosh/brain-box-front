@@ -103,7 +103,7 @@ export default function NavigationMenu({
               <button
                 type="button"
                 onClick={onLogout}
-                className="cursor-pointer p-1 text-fg-muted"
+                className="cursor-pointer p-1 text-accent-red"
               >
                 <LogOut size={20} />
               </button>
